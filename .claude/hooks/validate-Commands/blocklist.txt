@@ -1,0 +1,14 @@
+rm\s+-rf
+del\s+/f\s+/s\s+/q
+format\s+
+diskpart
+shutdown
+restart-computer
+stop-computer
+remove-item\s+-recurse
+remove-item\s+-force
+cipher\s+/w
+bcdedit
+net\s+user.*\/delete
+curl.*\|\s*sh
+wget.*\|\s*sh
