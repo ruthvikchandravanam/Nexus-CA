@@ -3,7 +3,7 @@
 # Certificate Authority (CA) Platform
 
 Version: 1.0
-Status: Baseline Scope Locked
+Status: Baseline Scope Locked — amended to add configurable Role Management (RBAC engine); see [§Role Management](#role-management-configurable-rbac)
 
 ## Purpose
 
@@ -30,6 +30,7 @@ Develop an internal Certificate Authority platform for:
 - Enable / Disable Users
 - Self Profile Update
 - Assign Roles (at creation and post-creation)
+- Role Management — create, edit, delete, and view configurable custom roles (RBAC engine)
 - Submit CSR
 - Issue Client, Server, and Signing Certificates
 - Revoke Root CA
@@ -52,7 +53,7 @@ Develop an internal Certificate Authority platform for:
 - SSO
 - Multi-Tenancy
 - Public Certificate Issuance
-- Workflow Customization
+- Workflow Customization — changing approval-flow steps/stages (note: configurable **Role Management** is in scope; see [§Role Management](#role-management-configurable-rbac))
 
 ---
 
@@ -68,7 +69,11 @@ Develop an internal Certificate Authority platform for:
 | OPERATOR_CHECKER | Reviews and approves or rejects certificate issuance requests |
 | AUDITOR | Read-only access to all data for compliance and audit purposes |
 
+These five are the **seeded roles** shipped with the platform. They are ordinary roles built on the same model as custom roles and may themselves be edited or deleted, subject to the safeguards in [§Role Management](#role-management-configurable-rbac). Each role has exactly one **archetype** — **Maker**, **Checker**, or **Viewer** — which fixes the operations it may be granted and enforces segregation of duties. The seeded roles map as: ADMIN_MAKER, OPERATOR_MAKER → Maker; ADMIN_CHECKER, OPERATOR_CHECKER → Checker; AUDITOR → Viewer.
+
 ### Permissions
+
+> The matrix below is the **seeded default** configuration of the five system roles. Permissions are not hard-coded: under configurable Role Management (see [§Role Management](#role-management-configurable-rbac)) each role is assigned permissions from a fixed catalogue, and this matrix is the default that ships with the system — it may itself be edited.
 
 | Feature | Operation | ADMIN_MAKER | ADMIN_CHECKER | OPERATOR_MAKER | OPERATOR_CHECKER | AUDITOR |
 |---|---|:---:|:---:|:---:|:---:|:---:|
@@ -128,6 +133,76 @@ Develop an internal Certificate Authority platform for:
 | Root CA Revocation | ADMIN_MAKER | ADMIN_CHECKER |
 | System Configuration Update | ADMIN_MAKER | ADMIN_CHECKER |
 | Intermediate CA Revocation | ADMIN_MAKER | ADMIN_CHECKER |
+| Role Creation | ADMIN_MAKER | ADMIN_CHECKER |
+| Role Edit | ADMIN_MAKER | ADMIN_CHECKER |
+| Role Deletion | ADMIN_MAKER | ADMIN_CHECKER |
+
+> The pairings above are the **seeded defaults**. With configurable roles the routing generalises: a maker request for feature *F* is actionable by **any active Checker-archetype role that holds Approve on F** (see [§Role Management](#role-management-configurable-rbac)). Self-approval remains prohibited.
+
+---
+
+## Role Management (Configurable RBAC)
+
+The platform ships five **seeded roles** (ADMIN_MAKER, ADMIN_CHECKER, OPERATOR_MAKER, OPERATOR_CHECKER, AUDITOR). Beyond these, a user whose role grants the relevant **Role** permission may **create, edit, delete, and view custom roles**, each assembled from a fixed catalogue of permissions. The seeded roles are ordinary roles and may themselves be edited or deleted, subject to the safeguards below.
+
+### Archetypes
+
+Every role has exactly one **archetype**, chosen first at creation. The archetype fixes the palette of operations the role may be granted and enforces segregation of duties — a role can never be both an initiator and an approver of the same feature.
+
+| Archetype | Operation palette | Purpose |
+|---|---|---|
+| **Maker** | Create, Edit, Delete, View (plus feature-specific: Submit, Download, Enable/Disable, Revoke, Reset Password, Assign Role) | Initiates requests |
+| **Checker** | View, Approve / Reject | Reviews and decides maker requests |
+| **Viewer** | View | Read-only access for audit and compliance |
+
+### Permission Catalogue
+
+A role's permissions are a set of (Feature, Operation) pairs selected from the catalogue. The operations offered for a feature depend on the role's archetype and on which operations that feature supports.
+
+| Feature | Maker operations | Checker | Viewer |
+|---|---|---|---|
+| Root CA | Create, View, Download, Enable/Disable, Revoke | View, Approve/Reject | View |
+| Intermediate CA | Create, View, Download, Enable/Disable, Revoke | View, Approve/Reject | View |
+| Certificate | Submit, View, Download | View, Approve/Reject | View |
+| User | Create, Edit, Delete, View, Enable/Disable, Reset Password, Assign Role | View, Approve/Reject | View |
+| Role | Create, Edit, Delete, View | View, Approve/Reject | View |
+| System Configuration | Edit, View | View, Approve/Reject | View |
+| Reports | — | — | View |
+| Audit Logs | — | — | View |
+
+**Edit and Delete are offered only for User, Role, and System Configuration.** Cryptographic entities — Root CA, Intermediate CA, and issued Certificates — are never editable or deletable: their identity is cryptographically fixed and their history is required for audit and trust-chain integrity. Their only lifecycle operations remain Enable/Disable and Revoke. **Delete is a soft delete**: the target is marked `DELETED` and retained with its full history; records are never physically purged.
+
+### Role Lifecycle (Maker-Checker)
+
+Creating, editing, or deleting a role is itself a maker-checker request:
+
+- A **Maker**-archetype role holding the relevant **Role** operation (Create / Edit / Delete) submits the request.
+- A **Checker**-archetype role holding **Approve on Role** reviews the before/after permission set and approves or rejects.
+- On approval the role definition takes effect. All changes are captured in the audit log with before/after snapshots, identical in form to every other request type.
+
+### Approval Routing (Feature Domain)
+
+A maker request for feature *F* is actionable by **any active Checker-archetype role that holds Approve on F**. This generalises the seeded admin/operator split: administrative features (CA, User, Role, System Configuration) are approved by checkers holding Approve on those features; certificate issuance is approved by checkers holding Approve on Certificate.
+
+### Segregation-of-Duties Invariant
+
+The system rejects any role definition or change that would violate segregation of duties:
+
+- A role may hold maker operations (Create/Edit/Delete/Submit/Revoke) **or** Approve for a given feature — never both. This is guaranteed by the exclusive archetype.
+- No user may approve a request they submitted.
+- A maker cannot grant, via a custom role, any permission the catalogue does not define; the role-creation request still requires checker approval.
+
+### Minimum-Viability Safeguards
+
+Because seeded roles are editable and deletable, the system must prevent self-lockout. A role edit, delete, disable, or assignment change is **rejected** (with a clear error, validated at both submission and execution) if it would:
+
+- leave **no active user able to approve** requests for a feature that has or can have pending requests (extends [Checker Availability](#checker-availability));
+- leave **no active user able to manage Roles or Users** — i.e., remove every path to recover administration;
+- leave **no active Maker** able to initiate a feature the platform requires to operate.
+
+### Audit
+
+Every role create / edit / delete, archetype assignment, permission change, and role-to-user assignment is recorded in the audit log with actor, timestamp, before/after permission sets, and the approving checker.
 
 ---
 
@@ -580,6 +655,21 @@ Each report is a flat list sorted by creation date descending. No filtering, exp
 | Created By | ADMIN_MAKER username who submitted the creation request |
 | Approved By | ADMIN_CHECKER username who approved the creation request |
 | Created Date | Date the user creation request was submitted |
+
+### Role Report
+
+| Column | Description |
+|---|---|
+| Role ID | Unique identifier |
+| Name | Role name |
+| Archetype | Maker, Checker, or Viewer |
+| Type | System (seeded) or Custom |
+| Permissions | Count of (feature, operation) grants |
+| Assigned Users | Number of active users holding the role |
+| Status | ACTIVE or DELETED |
+| Created By | ADMIN_MAKER username (blank for seeded roles) |
+| Approved By | ADMIN_CHECKER username (blank for seeded roles) |
+| Created Date | Date the role creation request was submitted |
 
 ### Pending Approval Report
 

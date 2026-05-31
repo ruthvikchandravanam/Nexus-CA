@@ -16,7 +16,7 @@ Role assignment also covers the *initial* role choice for a new user. The initia
 ## Preconditions
 
 - Target user exists and is `ACTIVE`.
-- New role is one of the five defined roles and differs from current role.
+- New role references an ACTIVE role (seeded or custom) and differs from current role.
 - The change does not leave a checker role without an ACTIVE user.
 
 ## Diagram
@@ -58,7 +58,7 @@ flowchart TD
 |---|---|---|
 | Target user ≠ maker | Self-role-change prohibited | 403 `AUTH-0011` |
 | New role ≠ current role | No-op rejected | 409 `BUS-0021` |
-| New role ∈ {ADMIN_MAKER, ADMIN_CHECKER, OPERATOR_MAKER, OPERATOR_CHECKER, AUDITOR} |  | 400 `VAL-0012` |
+| New role references an ACTIVE role (seeded or custom) | | 400 `VAL-0012` |
 
 ## Error Paths
 

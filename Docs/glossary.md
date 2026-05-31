@@ -7,8 +7,13 @@ Definitions for project-specific and PKI terms used across Nexus CA documentatio
 | Term | Definition |
 |---|---|
 | **Nexus CA** | The name of the platform. |
-| **Maker** | A user who initiates a request that requires approval. The two maker roles are `ADMIN_MAKER` and `OPERATOR_MAKER`. |
-| **Checker** | A user who reviews and approves or rejects a request submitted by a maker. The two checker roles are `ADMIN_CHECKER` and `OPERATOR_CHECKER`. |
+| **Maker** | A user whose role has the **Maker** archetype — it initiates requests that require approval. The seeded maker roles are `ADMIN_MAKER` and `OPERATOR_MAKER`; custom maker roles may also be created (see [BRD §Role Management](1-Requirements/BRD.md#role-management-configurable-rbac)). |
+| **Checker** | A user whose role has the **Checker** archetype — it reviews and approves or rejects maker requests. The seeded checker roles are `ADMIN_CHECKER` and `OPERATOR_CHECKER`; custom checker roles may also exist. |
+| **Archetype** | The fixed category of a role — **Maker**, **Checker**, or **Viewer** — chosen at creation and immutable thereafter. It determines the operation palette a role may be granted and structurally enforces segregation of duties. |
+| **Seeded role** | One of the five roles shipped with the platform (`ADMIN_MAKER`, `ADMIN_CHECKER`, `OPERATOR_MAKER`, `OPERATOR_CHECKER`, `AUDITOR`). They are ordinary roles, editable and deletable like custom roles, but flagged `is_system`. |
+| **Custom role** | A role created post-deployment via maker-checker (WF-016), assembled from the permission catalogue. |
+| **Permission catalogue** | The fixed set of (feature, operation) pairs a role may be granted. It is the upper bound on authority — no permission exists outside it. |
+| **Soft delete** | Marking a record `DELETED` and retaining it (with history) rather than physically removing it. Applies to Users and Roles; cryptographic entities are never deleted. |
 | **Maker-Checker workflow** | The dual-control pattern in which one user submits an action and a different user approves it before execution. Implemented for all administrative and operational request types in Nexus CA. |
 | **Self-approval** | The prohibited situation in which the same user is both the maker and the checker of a request. Prevented by both UI and server enforcement. |
 | **Superseded request** | A `PENDING_APPROVAL` request that targets the same entity as another request which has now been `EXECUTED`. Per BRD, all such pending peers are auto-rejected with reason *"superseded by executed request."* |
@@ -78,15 +83,17 @@ Definitions for project-specific and PKI terms used across Nexus CA documentatio
 | **HMAC** | Keyed-hash message authentication. HMAC-SHA-256 is used as the JWS signing algorithm. |
 | **SecureRandom** | The JDK CSPRNG abstraction; used for all keys, IVs, serials, OTCs, and tokens. |
 
-## Roles (BRD-defined)
+## Roles (seeded defaults)
 
-| Role | Scope |
-|---|---|
-| `ADMIN_MAKER` | Submits administrative requests: CA management, user management, system configuration, CA revocation. |
-| `ADMIN_CHECKER` | Reviews and decides on administrative requests. |
-| `OPERATOR_MAKER` | Submits certificate issuance requests. |
-| `OPERATOR_CHECKER` | Reviews and decides on certificate issuance requests. |
-| `AUDITOR` | Read-only across all data and requests. |
+These five are the **seeded** roles; they are the default configuration of the RBAC engine and may be edited or deleted like any custom role (see [BRD §Role Management](1-Requirements/BRD.md#role-management-configurable-rbac)). Their archetypes are: ADMIN_MAKER, OPERATOR_MAKER → **Maker**; ADMIN_CHECKER, OPERATOR_CHECKER → **Checker**; AUDITOR → **Viewer**.
+
+| Role | Archetype | Scope (default) |
+|---|---|---|
+| `ADMIN_MAKER` | Maker | Submits administrative requests: CA management, user management, role management, system configuration, CA revocation. |
+| `ADMIN_CHECKER` | Checker | Reviews and decides on administrative requests. |
+| `OPERATOR_MAKER` | Maker | Submits certificate issuance requests. |
+| `OPERATOR_CHECKER` | Checker | Reviews and decides on certificate issuance requests. |
+| `AUDITOR` | Viewer | Read-only across all data and requests. |
 
 ## See also
 

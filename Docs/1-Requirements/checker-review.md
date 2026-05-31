@@ -44,6 +44,10 @@ The diff renderer applies the colors defined in [branding.md — Checker Approva
 
 For Modified rows the renderer shows both colors on the same row: the previous value (amber, strikethrough) followed by the new value (blue).
 
+### Role requests
+
+For `ROLE_CREATE` and `ROLE_EDIT` requests, each **(feature, operation) permission** is treated as a field. A permission present only in the After snapshot renders as **Added** (green); a permission present only in the Before snapshot renders as **Removed** (red); the role name renders as a Modified row. For `ROLE_CREATE` the Before pane is empty, so every granted permission appears as Added. This lets the checker see exactly which authorities a role would gain or lose before approving — see [BRD §Role Management](BRD.md#role-management-configurable-rbac).
+
 ## Accessibility Requirements
 
 - Diff color is decorative only. Each change row carries an `aria-label` describing the change type — e.g., `aria-label="Modified: role changed from OPERATOR_MAKER to OPERATOR_CHECKER"`.

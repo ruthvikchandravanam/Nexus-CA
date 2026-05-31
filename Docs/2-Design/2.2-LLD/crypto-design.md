@@ -152,7 +152,7 @@ Asymmetric JWS (RS256/ES256) is not used in v1.0 because the only verifier of th
 | `iss` | string | `nexus-ca` |
 | `sub` | string | User ID (decimal) |
 | `username` | string | Username (informational) |
-| `role` | string | One of the five roles |
+| `role` | string | The user's assigned role (seeded or custom). Authorisation re-checks the role's permissions server-side per request; permissions are not embedded in the token. |
 | `session_version` | integer | Snapshot of `users.session_version` at issue time |
 | `iat` | integer | Issued at (Unix seconds) |
 | `exp` | integer | Expiry (Unix seconds) |

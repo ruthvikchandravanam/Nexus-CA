@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Audit Log — Nexus CA (AUDITOR)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/nexus.css">
+</head>
+<body>
+<script>try{sessionStorage.setItem('nexusRole','AUDITOR')}catch(e){}</script>
+<div class="app">
+  <aside class="sidebar">
+    <div class="sidebar__brand">
+      <svg width="26" height="26" viewBox="0 0 32 32" fill="none" style="color:#fff">
+        <path d="M9 25 V7 L23 25 V7" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+        <circle cx="9" cy="7" r="3.5" fill="currentColor"/><circle cx="16" cy="16" r="3" fill="#22D3EE"/><circle cx="23" cy="25" r="3.5" fill="currentColor"/>
+      </svg>
+      <span class="wordmark">Nexus CA</span>
+    </div>
+    <nav class="sidebar__nav">
+      <a class="nav-item" href="R-AU-dashboard.html"><span class="ico">▦</span> Dashboard</a>
+      <div class="sidebar__section">Authorities</div>
+      <a class="nav-item" href="S-200-root-ca-list.html"><span class="ico">◈</span> Root CAs</a>
+      <a class="nav-item" href="S-300-intermediate-ca-list.html"><span class="ico">◇</span> Intermediate CAs</a>
+      <a class="nav-item" href="S-400-certificate-list.html"><span class="ico">▤</span> Certificates</a>
+      <div class="sidebar__section">Requests</div>
+      <a class="nav-item" href="R-AU-readonly-view.html"><span class="ico">◷</span> Pending Requests</a>
+      <a class="nav-item" href="S-502-request-history.html"><span class="ico">⟲</span> Request History</a>
+      <div class="sidebar__section">Administration</div>
+      <a class="nav-item" href="S-600-user-list.html"><span class="ico">◔</span> Users</a>
+      <a class="nav-item" href="S-700-system-configuration.html"><span class="ico">⚙</span> System Configuration</a>
+      <a class="nav-item" href="S-800-report-root-cas.html"><span class="ico">▥</span> Reports</a>
+      <a class="nav-item is-active" href="R-AU-audit.html"><span class="ico">▣</span> Audit Log</a>
+      <a class="nav-item" href="S-102-profile.html"><span class="ico">◐</span> Profile</a>
+    </nav>
+    <div class="sidebar__user">
+      <div class="avatar">AU</div>
+      <div class="who"><div class="name">Aisha Khan</div><span class="role-badge">AUDITOR</span></div>
+      <a class="sidebar__signout" href="S-000-login.html" title="Sign out">⎋</a>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar"><div class="crumbs"><b>Audit Log</b></div><div class="spacer"></div><a class="body-sm" href="personas.html">Switch persona ↗</a></div>
+    <div class="content">
+      <div class="page-head"><div><h1 class="h1">Audit Log</h1><div class="sub">Immutable record of every action. Sorted newest first. Read-only.</div></div></div>
+      <div class="table-wrap">
+        <table class="tbl">
+          <thead><tr><th>Event ID</th><th>Event Type</th><th>Timestamp (UTC)</th><th>Username</th><th>Role</th><th>Action</th><th>Result</th><th>Request ID</th><th>Target</th><th>Changed Fields</th></tr></thead>
+          <tbody>
+            <tr><td class="mono">EVT-90412</td><td>APPROVAL</td><td class="mono">31 May 2026 09:40:55</td><td>p.checker</td><td>OPERATOR_CHECKER</td><td>Approved certificate issuance</td><td><span class="badge badge--completed">SUCCESS</span></td><td class="mono">REQ-2044</td><td>CRT-0148</td><td class="mono">—</td></tr>
+            <tr><td class="mono">EVT-90411</td><td>SUBMIT</td><td class="mono">31 May 2026 09:31:02</td><td>o.maker</td><td>OPERATOR_MAKER</td><td>Submitted CSR</td><td><span class="badge badge--completed">SUCCESS</span></td><td class="mono">REQ-2044</td><td>CRT-0148</td><td class="mono">—</td></tr>
+            <tr><td class="mono">EVT-90410</td><td>DOWNLOAD</td><td class="mono">31 May 2026 09:52:18</td><td>o.maker</td><td>OPERATOR_MAKER</td><td>Downloaded certificate (→ COMPLETED)</td><td><span class="badge badge--completed">SUCCESS</span></td><td class="mono">REQ-2044</td><td>CRT-0148</td><td class="mono">status EXECUTED→COMPLETED</td></tr>
+            <tr><td class="mono">EVT-90408</td><td>AUTH</td><td class="mono">31 May 2026 08:40:10</td><td>j.lee</td><td>OPERATOR_MAKER</td><td>Login MFA</td><td><span class="badge badge--revoked">FAILURE</span></td><td class="mono">—</td><td>USR-0028</td><td class="mono">attempt 3 of 3</td></tr>
+            <tr><td class="mono">EVT-90407</td><td>LOCKOUT</td><td class="mono">31 May 2026 08:40:11</td><td>system</td><td>—</td><td>Account locked</td><td><span class="badge badge--revoked">SUCCESS</span></td><td class="mono">—</td><td>USR-0028</td><td class="mono">status ACTIVE→LOCKED</td></tr>
+            <tr><td class="mono">EVT-90377</td><td>CONFIG</td><td class="mono">29 May 2026 12:11:33</td><td>c.checker</td><td>ADMIN_CHECKER</td><td>Approved config change</td><td><span class="badge badge--completed">SUCCESS</span></td><td class="mono">REQ-2030</td><td>system-config</td><td class="mono">Password Expiry 30→45</td></tr>
+            <tr><td class="mono">EVT-90301</td><td>REVOCATION</td><td class="mono">26 May 2026 15:02:09</td><td>c.checker</td><td>ADMIN_CHECKER</td><td>Approved Root CA revocation</td><td><span class="badge badge--completed">SUCCESS</span></td><td class="mono">REQ-2037</td><td>RCA-004</td><td class="mono">status ACTIVE→REVOKED</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="screen-tag">Persona: AUDITOR · Audit Log</div>
+</body>
+</html>

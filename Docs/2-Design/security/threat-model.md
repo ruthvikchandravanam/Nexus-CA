@@ -14,6 +14,7 @@ The threats this platform must defend against and the controls mapped to each th
 | A6 | System configuration (lockout thresholds, key-size minimums, etc.) | Internal |
 | A7 | Email notifications (containing temporary passwords, OTCs) | Critical (in transit) |
 | A8 | KEK and JWT secrets | Critical |
+| A9 | Role and permission definitions (RBAC policy) | Critical (integrity) — a tampered role grants or removes authority across the platform |
 
 ## 2. Trust boundaries
 
@@ -50,6 +51,7 @@ Each arrow is a boundary across which authentication and validation apply. The m
 | **A5 JWT** | C14 | C15 | — | — | — | C16 |
 | **A7 Email** | C17 | — | — | C18 | — | — |
 | **A8 KEK / JWT secret** | — | — | — | C19 | — | C20 |
+| **A9 Role/permission definitions** | — | C22 | C13 | — | — | C21, C23 |
 
 ## 5. Controls
 
@@ -75,6 +77,9 @@ Each arrow is a boundary across which authentication and validation apply. The m
 | C18 | TLS on SMTP relay; corporate relay is the only outbound destination from VLAN 3 (single fixed IP) | T1 | [architecture.md — VLANs](../2.1-HLD/architecture.md#vlans) |
 | C19 | Secrets stored in OpenBao with audit; KEK never persisted to disk on CA host; injected at container start | T6, T9 (partial) | [tools.md — Secret Management](../../3-Implementation/tools.md#secret-management) |
 | C20 | Two-person physical procedure for KEK rotation and bootstrap | T9 (residual) | [bootstrap-procedure.md](../../3-Implementation/bootstrap-procedure.md), [key-rotation-procedure.md](../../3-Implementation/key-rotation-procedure.md) |
+| C21 | Every role has one **exclusive archetype** (Maker / Checker / Viewer); a role can never hold both initiating and approving operations for a feature — segregation of duties is structural, not configurable | T3, T4, T5 | [BRD — Role Management](../../1-Requirements/BRD.md#role-management-configurable-rbac) |
+| C22 | Role create/edit/delete is itself a maker-checker request (a maker cannot unilaterally change authority); changes are audited with before/after permission sets and re-validated at execution | T3, T5 | [WF-016](../../1-Requirements/Workflows/WF-016-role-creation.md)/[WF-017](../../1-Requirements/Workflows/WF-017-role-edit.md)/[WF-018](../../1-Requirements/Workflows/WF-018-role-deletion.md) |
+| C23 | Permissions are bounded by a fixed catalogue (no privilege beyond defined (feature, operation) pairs); minimum-viability safeguards reject any change that orphans an approver or the last Role/User admin path | T3, T5 | [BRD — Minimum-Viability Safeguards](../../1-Requirements/BRD.md#role-management-configurable-rbac), [error-catalog.md](../2.2-LLD/error-catalog.md) |
 
 ## 6. Residual risks
 
@@ -118,6 +123,19 @@ Attacker is an authenticated ADMIN_CHECKER colluding with no one.
 - Detection: every approval is audited with the checker's identity and comment (C13).
 
 This is exactly the design intent of the maker-checker control.
+
+### Scenario 5 — Privilege escalation via a custom role (T3, T5)
+
+A malicious ADMIN_MAKER tries to grant themselves (or an accomplice) excessive authority by crafting a custom role, or to lock administration out by deleting/editing roles.
+
+- They cannot grant any permission outside the fixed **catalogue** — there is no "all permissions" or arbitrary-capability option (C23).
+- The role create/edit/delete is itself **maker-checker**: a separate checker must approve, and they see the full before/after permission diff (C22). A solo maker cannot enact a privileged role.
+- The **archetype is exclusive**, so no single role can both submit and approve — the new role cannot be a self-contained bypass of dual control (C21).
+- **Minimum-viability safeguards** reject any edit/delete that would orphan a feature's approver or remove the last path to administer Roles/Users, preventing self-lockout (C23).
+- Assigning the new role to a user is a further maker-checker request (WF-007).
+- Detection: every role and assignment change is audited with actor and before/after permission sets (C13).
+
+Net effect: introducing configurable roles does not weaken dual control — every step that changes authority still requires a second person and is fully audited.
 
 ### Scenario 4 — Brute force against login (T1)
 

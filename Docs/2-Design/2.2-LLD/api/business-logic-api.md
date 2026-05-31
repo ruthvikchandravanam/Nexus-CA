@@ -80,8 +80,21 @@ This document is the interim endpoint catalog. The authoritative machine-readabl
 | GET | `/users/{id}` | ADMIN_MAKER, ADMIN_CHECKER, AUDITOR; or self | Detail. |
 | POST | `/users/requests/create` | ADMIN_MAKER | WF-005. |
 | POST | `/users/{id}/requests/enable-disable` | ADMIN_MAKER | WF-006. |
-| POST | `/users/{id}/requests/role-assign` | ADMIN_MAKER | WF-007. Body: `{ "new_role": "..." }`. |
+| POST | `/users/{id}/requests/role-assign` | ADMIN_MAKER | WF-007. Body: `{ "new_role_id": <id> }`. |
 | POST | `/users/{id}/password/reset` | ADMIN_MAKER | WF-014. No maker-checker. |
+
+### Role management
+
+| Method | Path | Roles | Purpose |
+|---|---|---|---|
+| GET | `/roles` | ADMIN_MAKER, ADMIN_CHECKER, AUDITOR | List roles (id, name, archetype, is_system, permission count, assigned-user count, status). |
+| GET | `/roles/{id}` | ADMIN_MAKER, ADMIN_CHECKER, AUDITOR | Detail including the full permission set and assigned users. |
+| GET | `/roles/catalogue` | ADMIN_MAKER | The permission catalogue (features × operations valid per archetype) — drives the Create/Edit Role form. |
+| POST | `/roles/requests/create` | ADMIN_MAKER | WF-016 submit. Body: `{ "name", "archetype", "permissions": [ { "feature", "operation" } ] }`. |
+| POST | `/roles/{id}/requests/edit` | ADMIN_MAKER | WF-017 submit. Body: `{ "name"?, "permissions": [...] }` (archetype immutable). |
+| POST | `/roles/{id}/requests/delete` | ADMIN_MAKER | WF-018 submit. Body: `{ "reassign_users_to_role_id"?: <id> }`. |
+
+> Roles shown in the **Roles** column of this catalogue are the seeded defaults. Authorisation is enforced by the caller's **permissions** (feature + operation), not a hard-coded role name — see [BRD §Role Management](../../1-Requirements/BRD.md#role-management-configurable-rbac). A request for feature *F* routes to any active Checker-archetype role holding Approve on *F*.
 
 ### Requests (maker-checker queue)
 
@@ -108,6 +121,7 @@ This document is the interim endpoint catalog. The authoritative machine-readabl
 | GET | `/reports/intermediate-cas` | All | |
 | GET | `/reports/certificates` | All | |
 | GET | `/reports/users` | All (excl. password fields) | |
+| GET | `/reports/roles` | ADMIN_MAKER, ADMIN_CHECKER, AUDITOR | Per BRD Role Report. |
 | GET | `/reports/pending-approval` | Per BRD visibility | |
 | GET | `/reports/request-history` | Per BRD visibility | |
 | GET | `/reports/audit` | All | Audit log report. |

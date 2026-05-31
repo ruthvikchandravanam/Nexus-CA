@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Create Root CA — Nexus CA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/nexus.css">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="sidebar__brand">
+      <svg width="26" height="26" viewBox="0 0 32 32" fill="none" style="color:#fff">
+        <path d="M9 25 V7 L23 25 V7" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+        <circle cx="9" cy="7" r="3.5" fill="currentColor"/><circle cx="16" cy="16" r="3" fill="#22D3EE"/><circle cx="23" cy="25" r="3.5" fill="currentColor"/>
+      </svg>
+      <span class="wordmark">Nexus CA</span>
+    </div>
+    <nav class="sidebar__nav">
+      <a class="nav-item" href="S-100-dashboard.html"><span class="ico">▦</span> Dashboard</a>
+      <div class="sidebar__section">Authorities</div>
+      <a class="nav-item is-active" href="S-200-root-ca-list.html"><span class="ico">◈</span> Root CAs</a>
+      <a class="nav-item" href="S-300-intermediate-ca-list.html"><span class="ico">◇</span> Intermediate CAs</a>
+      <a class="nav-item" href="S-400-certificate-list.html"><span class="ico">▤</span> Certificates</a>
+      <div class="sidebar__section">Requests</div>
+      <a class="nav-item" href="S-500-requests-pending.html"><span class="ico">◷</span> Pending Requests</a>
+      <a class="nav-item" href="S-502-request-history.html"><span class="ico">⟲</span> Request History</a>
+      <div class="sidebar__section">Administration</div>
+      <a class="nav-item" href="S-600-user-list.html"><span class="ico">◔</span> Users</a>
+      <a class="nav-item" href="S-700-system-configuration.html"><span class="ico">⚙</span> System Configuration</a>
+      <a class="nav-item" href="S-800-report-root-cas.html"><span class="ico">▥</span> Reports</a>
+      <a class="nav-item" href="S-806-report-audit.html"><span class="ico">▣</span> Audit Log</a>
+      <a class="nav-item" href="S-102-profile.html"><span class="ico">◐</span> Profile</a>
+    </nav>
+    <div class="sidebar__user">
+      <div class="avatar">AM</div>
+      <div class="who"><div class="name">Alex Maker</div><span class="role-badge">ADMIN_MAKER</span></div>
+      <a class="sidebar__signout" href="S-000-login.html" title="Sign out">⎋</a>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar"><div class="crumbs"><a href="S-200-root-ca-list.html">Root CAs</a> / <b>Create</b></div></div>
+    <div class="content">
+      <div class="page-head">
+        <div><h1 class="h1">Create Root CA</h1><div class="sub">Submitting creates a request that requires ADMIN_CHECKER approval before the keypair is generated.</div></div>
+      </div>
+
+      <form class="form card" onsubmit="return false">
+        <div class="card__title">Subject</div>
+        <div class="form-row">
+          <div class="field"><label>Common Name (CN)</label><input class="input" placeholder="Nexus Internal Root CA G3" maxlength="64"><div class="help">Non-empty, ≤ 64 printable ASCII characters.</div></div>
+        </div>
+        <div class="form-row">
+          <div class="field"><label>Organisation (O)</label><input class="input" placeholder="Acme Corp" maxlength="64"></div>
+          <div class="field"><label>Country (C)</label><input class="input" placeholder="US" maxlength="2" style="text-transform:uppercase"><div class="help">ISO 3166-1 alpha-2.</div></div>
+        </div>
+
+        <hr class="divider">
+        <div class="card__title">Key &amp; Validity</div>
+        <div class="form-row">
+          <div class="field"><label>Key Algorithm</label><select class="select"><option>RSA</option><option>EC</option></select><div class="help">Allowed: RSA, EC.</div></div>
+          <div class="field"><label>Key Size</label><select class="select"><option>2048</option><option selected>3072</option><option>4096</option></select><div class="help">RSA minimum 2048 bits.</div></div>
+        </div>
+        <div class="form-row">
+          <div class="field" style="max-width:50%"><label>Validity Period (years)</label><input class="input" type="number" value="20" min="1" max="30"><div class="help">1–30 years.</div></div>
+        </div>
+
+        <div class="banner banner--info mt-6"><span>The private key is generated and stored encrypted in VLAN 4. It is never exported.</span></div>
+
+        <div class="form-actions">
+          <button class="btn btn--primary" type="submit">Submit for approval</button>
+          <a class="btn btn--ghost" href="S-200-root-ca-list.html">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<div class="screen-tag">S-202 · /root-cas/new</div>
+</body>
+</html>

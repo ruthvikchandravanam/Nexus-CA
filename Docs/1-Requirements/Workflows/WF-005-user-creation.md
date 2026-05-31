@@ -15,7 +15,7 @@ ADMIN_MAKER submits a request to create a new user account with a specified role
 ## Preconditions
 
 - Username and email are unique across all users (regardless of status).
-- Role is one of the five defined roles.
+- Role references an ACTIVE role (seeded or custom; see [BRD — Role Management](../BRD.md#role-management-configurable-rbac)).
 
 ## Diagram
 

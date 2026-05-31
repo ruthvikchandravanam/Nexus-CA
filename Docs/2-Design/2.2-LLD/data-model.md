@@ -14,6 +14,8 @@ The Business DB stores all non-cryptographic application state.
 
 ```mermaid
 erDiagram
+    ROLES ||--o{ USERS : "assigned to"
+    ROLES ||--o{ ROLE_PERMISSIONS : grants
     USERS ||--o{ REQUESTS : "creates / decides"
     USERS ||--o{ AUDIT_EVENTS : performs
     REQUESTS ||--o{ AUDIT_EVENTS : "logged for"
@@ -46,8 +48,8 @@ Authentication, authorization, and account state.
 | `password_changed_at` | DATETIME(3) | NOT NULL | |
 | `force_password_reset` | TINYINT(1) | NOT NULL, DEFAULT 0 | Set true for temp passwords (WF-005/WF-014). |
 | `temp_password_expires_at` | DATETIME(3) | NULL | Non-null only while `force_password_reset = 1`. |
-| `role` | ENUM('ADMIN_MAKER','ADMIN_CHECKER','OPERATOR_MAKER','OPERATOR_CHECKER','AUDITOR') | NOT NULL | |
-| `status` | ENUM('ACTIVE','DISABLED') | NOT NULL, DEFAULT 'ACTIVE' | |
+| `role_id` | BIGINT UNSIGNED | NOT NULL, FK → roles.id | Replaces the former fixed `role` ENUM; points to a seeded or custom role (see [§Role Management](../../1-Requirements/BRD.md#role-management-configurable-rbac)). |
+| `status` | ENUM('ACTIVE','DISABLED','DELETED') | NOT NULL, DEFAULT 'ACTIVE' | `DELETED` is a soft delete — the row is retained for audit and never purged. |
 | `locked_at` | DATETIME(3) | NULL | Non-null while account is locked due to MFA failures. |
 | `mfa_failure_count` | INT UNSIGNED | NOT NULL, DEFAULT 0 | |
 | `session_version` | BIGINT UNSIGNED | NOT NULL, DEFAULT 0 | Bumped on every new login and on role/status/password change. |
@@ -56,7 +58,38 @@ Authentication, authorization, and account state.
 | `created_by_user_id` | BIGINT UNSIGNED | NULL, FK → users.id | NULL for bootstrap. |
 | `updated_at` | DATETIME(3) | NOT NULL | Application-maintained. |
 
-Indexes: `(role, status)`, `(email)`, `(status)`.
+Indexes: `(role_id, status)`, `(email)`, `(status)`.
+
+#### `roles`
+
+Role definitions for the configurable RBAC engine. Ships with five **seeded** rows (the original fixed roles); additional **custom** roles are created via maker-checker (WF-016/017/018). Roles are soft-deleted, never purged.
+
+| Column | Type | Constraints | Notes |
+|---|---|---|---|
+| `id` | BIGINT UNSIGNED | PK, AUTO_INCREMENT | |
+| `name` | VARCHAR(50) | NOT NULL, UNIQUE | Display name, e.g., `Certificate Operations Maker`. Uniqueness over non-deleted rows enforced at the application layer. |
+| `archetype` | ENUM('MAKER','CHECKER','VIEWER') | NOT NULL | Fixes the operation palette; immutable after creation. Enforces segregation of duties. |
+| `is_system` | TINYINT(1) | NOT NULL, DEFAULT 0 | `1` for the five seeded roles. Editable/deletable like custom roles but flagged for UI and reporting. |
+| `status` | ENUM('ACTIVE','DELETED') | NOT NULL, DEFAULT 'ACTIVE' | Soft delete only; retained for audit and to resolve historical assignments. |
+| `created_request_id` | BIGINT UNSIGNED | NULL, FK → requests.id | NULL for seeded rows. |
+| `created_at` | DATETIME(3) | NOT NULL | |
+| `updated_at` | DATETIME(3) | NOT NULL | Application-maintained. |
+
+Indexes: `(archetype, status)`, `(status)`.
+
+#### `role_permissions`
+
+The set of (feature, operation) grants for a role. Operations must be valid for the role's archetype and for the feature, per the permission catalogue in the BRD. `EDIT` / `DELETE` are accepted only for `USER`, `ROLE`, and `SYSTEM_CONFIG` features (cryptographic features never carry them).
+
+| Column | Type | Constraints | Notes |
+|---|---|---|---|
+| `id` | BIGINT UNSIGNED | PK, AUTO_INCREMENT | |
+| `role_id` | BIGINT UNSIGNED | NOT NULL, FK → roles.id ON DELETE CASCADE | |
+| `feature` | ENUM('ROOT_CA','INTERMEDIATE_CA','CERTIFICATE','USER','ROLE','SYSTEM_CONFIG','REPORTS','AUDIT') | NOT NULL | |
+| `operation` | ENUM('CREATE','EDIT','DELETE','VIEW','DOWNLOAD','SUBMIT','ENABLE_DISABLE','REVOKE','RESET_PASSWORD','ASSIGN_ROLE','APPROVE') | NOT NULL | `APPROVE` is the only operation for `CHECKER`; `VIEW` is the only operation for `VIEWER`. |
+| `created_at` | DATETIME(3) | NOT NULL | |
+
+Unique key: `(role_id, feature, operation)`.
 
 #### `system_configuration`
 
@@ -154,9 +187,9 @@ Single table for all maker-checker request types.
 | Column | Type | Constraints | Notes |
 |---|---|---|---|
 | `id` | BIGINT UNSIGNED | PK, AUTO_INCREMENT | |
-| `request_type` | ENUM(...) | NOT NULL | One of: `ROOT_CA_CREATE`, `ROOT_CA_ENABLE_DISABLE`, `ROOT_CA_REVOKE`, `INTERMEDIATE_CA_CREATE`, `INTERMEDIATE_CA_ENABLE_DISABLE`, `INTERMEDIATE_CA_REVOKE`, `USER_CREATE`, `USER_ENABLE_DISABLE`, `USER_ROLE_ASSIGN`, `CERTIFICATE_ISSUE`, `SYSTEM_CONFIG_UPDATE`. |
+| `request_type` | ENUM(...) | NOT NULL | One of: `ROOT_CA_CREATE`, `ROOT_CA_ENABLE_DISABLE`, `ROOT_CA_REVOKE`, `INTERMEDIATE_CA_CREATE`, `INTERMEDIATE_CA_ENABLE_DISABLE`, `INTERMEDIATE_CA_REVOKE`, `USER_CREATE`, `USER_ENABLE_DISABLE`, `USER_ROLE_ASSIGN`, `CERTIFICATE_ISSUE`, `SYSTEM_CONFIG_UPDATE`, `ROLE_CREATE`, `ROLE_EDIT`, `ROLE_DELETE`. |
 | `status` | ENUM('PENDING_APPROVAL','APPROVED','REJECTED','EXECUTED','COMPLETED') | NOT NULL, DEFAULT 'PENDING_APPROVAL' | |
-| `target_entity_kind` | VARCHAR(40) | NULL | `ROOT_CA`, `INTERMEDIATE_CA`, `USER`, `CERTIFICATE`, `SYSTEM_CONFIG`, or NULL for create. |
+| `target_entity_kind` | VARCHAR(40) | NULL | `ROOT_CA`, `INTERMEDIATE_CA`, `USER`, `CERTIFICATE`, `SYSTEM_CONFIG`, `ROLE`, or NULL for create. |
 | `target_entity_id` | BIGINT UNSIGNED | NULL | NULL for create operations (no entity exists yet). |
 | `payload_json` | JSON | NOT NULL | Submitted request fields. |
 | `approval_payload_json` | JSON | NULL | Set on approve/reject; contains checker comments and resolution. |
@@ -391,6 +424,22 @@ One shape per `request_type`. Examples:
     "MFA_ATTEMPT_LIMIT": 5,
     "ALLOWED_KEY_ALGORITHMS": ["RSA","EC"]
   }
+}
+
+// ROLE_CREATE  (ROLE_EDIT carries the same shape plus the target role id)
+{
+  "name": "Certificate Operations Maker",
+  "archetype": "MAKER",
+  "permissions": [
+    { "feature": "CERTIFICATE", "operation": "SUBMIT" },
+    { "feature": "CERTIFICATE", "operation": "VIEW" },
+    { "feature": "CERTIFICATE", "operation": "DOWNLOAD" }
+  ]
+}
+
+// ROLE_DELETE
+{
+  "reassign_users_to_role_id": 3   // role that current holders are moved to; null if none assigned
 }
 ```
 

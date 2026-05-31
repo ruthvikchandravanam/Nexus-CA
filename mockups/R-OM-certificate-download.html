@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CRT-0148 — Nexus CA (OPERATOR_MAKER)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/nexus.css">
+</head>
+<body>
+<script>try{sessionStorage.setItem('nexusRole','OPERATOR_MAKER')}catch(e){}</script>
+<div class="app">
+  <aside class="sidebar">
+    <div class="sidebar__brand">
+      <svg width="26" height="26" viewBox="0 0 32 32" fill="none" style="color:#fff">
+        <path d="M9 25 V7 L23 25 V7" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+        <circle cx="9" cy="7" r="3.5" fill="currentColor"/><circle cx="16" cy="16" r="3" fill="#22D3EE"/><circle cx="23" cy="25" r="3.5" fill="currentColor"/>
+      </svg>
+      <span class="wordmark">Nexus CA</span>
+    </div>
+    <nav class="sidebar__nav">
+      <a class="nav-item" href="R-OM-dashboard.html"><span class="ico">▦</span> Dashboard</a>
+      <div class="sidebar__section">Authorities</div>
+      <a class="nav-item" href="S-200-root-ca-list.html"><span class="ico">◈</span> Root CAs</a>
+      <a class="nav-item" href="S-300-intermediate-ca-list.html"><span class="ico">◇</span> Intermediate CAs</a>
+      <a class="nav-item is-active" href="S-400-certificate-list.html"><span class="ico">▤</span> Certificates</a>
+      <div class="sidebar__section">Requests</div>
+      <a class="nav-item" href="R-OM-my-requests.html"><span class="ico">⟲</span> My Requests</a>
+      <div class="sidebar__section">Reports</div>
+      <a class="nav-item" href="S-802-report-certificates.html"><span class="ico">▥</span> Reports</a>
+      <a class="nav-item" href="S-806-report-audit.html"><span class="ico">▣</span> Audit Log</a>
+      <a class="nav-item" href="S-102-profile.html"><span class="ico">◐</span> Profile</a>
+    </nav>
+    <div class="sidebar__user">
+      <div class="avatar">OM</div>
+      <div class="who"><div class="name">Olivia Operator</div><span class="role-badge">OPERATOR_MAKER</span></div>
+      <a class="sidebar__signout" href="S-000-login.html" title="Sign out">⎋</a>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar"><div class="crumbs"><a href="S-400-certificate-list.html">Certificates</a> / <b>CRT-0148</b></div><div class="spacer"></div><a class="body-sm" href="personas.html">Switch persona ↗</a></div>
+    <div class="content">
+      <div class="page-head">
+        <div class="row gap-3"><h1 class="h1">api.internal.acme.com</h1><span class="badge badge--completed">EXECUTED</span><span class="badge badge--approved">SERVER</span></div>
+        <button class="btn btn--primary btn--lg">⬇ Download (PEM — Full chain)</button>
+      </div>
+
+      <div class="banner banner--success"><span>Your request was approved and the certificate has been issued. <strong>Your first download completes the request</strong> (transitions EXECUTED → COMPLETED). Re-downloads serve the same bytes in the recorded format.</span></div>
+
+      <div class="grid grid--2">
+        <div class="card">
+          <div class="card__title">Subject &amp; Key</div>
+          <dl class="dl">
+            <dt>Certificate ID</dt><dd class="mono">CRT-0148</dd>
+            <dt>Subject CN</dt><dd>api.internal.acme.com</dd>
+            <dt>Key</dt><dd class="mono">RSA 2048</dd>
+            <dt>Serial</dt><dd class="mono">7F:2A:01:9C:33:0E</dd>
+            <dt>SANs</dt><dd class="mono">api.internal.acme.com, api-v2.internal.acme.com</dd>
+          </dl>
+        </div>
+        <div class="card">
+          <div class="card__title">Issuance</div>
+          <dl class="dl">
+            <dt>Issuing CA</dt><dd>Nexus Issuing CA — Servers</dd>
+            <dt>Valid From</dt><dd>31 May 2026</dd>
+            <dt>Valid To</dt><dd>30 May 2027</dd>
+            <dt>Output Format</dt><dd>PEM — Full chain</dd>
+            <dt>Approved By</dt><dd>p.checker (OPERATOR_CHECKER)</dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="screen-tag">Persona: OPERATOR_MAKER · Download (EXECUTED→COMPLETED)</div>
+</body>
+</html>

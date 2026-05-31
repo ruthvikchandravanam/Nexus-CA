@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Certificate CRT-0148 — Certificates — Nexus CA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/nexus.css">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="sidebar__brand">
+      <svg width="26" height="26" viewBox="0 0 32 32" fill="none" style="color:#fff">
+        <path d="M9 25 V7 L23 25 V7" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+        <circle cx="9" cy="7" r="3.5" fill="currentColor"/><circle cx="16" cy="16" r="3" fill="#22D3EE"/><circle cx="23" cy="25" r="3.5" fill="currentColor"/>
+      </svg>
+      <span class="wordmark">Nexus CA</span>
+    </div>
+    <nav class="sidebar__nav">
+      <a class="nav-item" href="S-100-dashboard.html"><span class="ico">▦</span> Dashboard</a>
+      <div class="sidebar__section">Authorities</div>
+      <a class="nav-item" href="S-200-root-ca-list.html"><span class="ico">◈</span> Root CAs</a>
+      <a class="nav-item" href="S-300-intermediate-ca-list.html"><span class="ico">◇</span> Intermediate CAs</a>
+      <a class="nav-item is-active" href="S-400-certificate-list.html"><span class="ico">▤</span> Certificates</a>
+      <div class="sidebar__section">Requests</div>
+      <a class="nav-item" href="S-500-requests-pending.html" data-roles="ADMIN_CHECKER OPERATOR_CHECKER AUDITOR"><span class="ico">◷</span> Pending Requests</a>
+      <a class="nav-item" href="S-502-request-history.html"><span class="ico">⟲</span> Request History</a>
+      <div class="sidebar__section">Reports</div>
+      <a class="nav-item" href="S-802-report-certificates.html"><span class="ico">▥</span> Reports</a>
+      <a class="nav-item" href="S-806-report-audit.html"><span class="ico">▣</span> Audit Log</a>
+      <a class="nav-item" href="S-102-profile.html"><span class="ico">◐</span> Profile</a>
+    </nav>
+    <div class="sidebar__user">
+      <div class="avatar">OM</div>
+      <div class="who"><div class="name">Olivia Operator</div><span class="role-badge">OPERATOR_MAKER</span></div>
+      <a class="sidebar__signout" href="S-000-login.html" title="Sign out">⎋</a>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar"><div class="crumbs"><a href="S-400-certificate-list.html">Certificates</a> / <b>CRT-0148</b></div></div>
+    <div class="content">
+      <div class="page-head">
+        <div class="row gap-3"><h1 class="h1">api.internal.acme.com</h1><span class="badge badge--active">ACTIVE</span><span class="badge badge--approved">SERVER</span></div>
+        <button class="btn btn--primary" data-roles="OPERATOR_MAKER OPERATOR_CHECKER">Download (PEM — Full chain)</button>
+      </div>
+
+      <div class="grid grid--2">
+        <div class="card">
+          <div class="card__title">Subject &amp; Key</div>
+          <dl class="dl">
+            <dt>Certificate ID</dt><dd class="mono">CRT-0148</dd>
+            <dt>Subject CN</dt><dd>api.internal.acme.com</dd>
+            <dt>Subject DN</dt><dd class="mono">CN=api.internal.acme.com, O=Acme Corp, C=US</dd>
+            <dt>Key Algorithm</dt><dd class="mono">RSA 2048</dd>
+            <dt>Serial Number</dt><dd class="mono">7F:2A:01:9C:33:0E</dd>
+            <dt>SANs</dt><dd class="mono">api.internal.acme.com<br>api-v2.internal.acme.com</dd>
+          </dl>
+        </div>
+        <div class="card">
+          <div class="card__title">Issuance</div>
+          <dl class="dl">
+            <dt>Issuing CA</dt><dd><a href="S-301-intermediate-ca-detail.html">Nexus Issuing CA — Servers</a></dd>
+            <dt>Type</dt><dd>SERVER</dd>
+            <dt>Valid From</dt><dd>31 May 2026</dd>
+            <dt>Valid To</dt><dd>30 May 2027</dd>
+            <dt>Output Format</dt><dd>PEM — Full chain</dd>
+            <dt>Request Status</dt><dd><span class="badge badge--completed">COMPLETED</span></dd>
+          </dl>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card__title">Issuance request timeline</div>
+        <div class="table-wrap" style="border:none">
+          <table class="tbl">
+            <thead><tr><th>Time (UTC)</th><th>Event</th><th>Actor</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td class="mono">31 May 2026 09:31:02</td><td>CSR submitted</td><td>o.maker</td><td><span class="badge badge--pending">PENDING_APPROVAL</span></td></tr>
+              <tr><td class="mono">31 May 2026 09:40:55</td><td>Approved</td><td>p.checker</td><td><span class="badge badge--approved">APPROVED</span></td></tr>
+              <tr><td class="mono">31 May 2026 09:41:03</td><td>Certificate signed &amp; persisted</td><td>system</td><td><span class="badge badge--completed">EXECUTED</span></td></tr>
+              <tr><td class="mono">31 May 2026 09:52:18</td><td>Downloaded by maker</td><td>o.maker</td><td><span class="badge badge--completed">COMPLETED</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="screen-tag">S-401 · /certificates/{id}</div>
+<script src="assets/rbac.js"></script>
+</body>
+</html>

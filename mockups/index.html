@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nexus CA — Screen Mockups</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/nexus.css">
+<style>
+  .gallery-head { background: var(--nexus-navy); color:#fff; padding: var(--space-12) var(--space-8); }
+  .gallery-head .row { gap: var(--space-4); }
+  .gallery-head h1 { color:#fff; font-size: 32px; }
+  .gallery-head .tagline { color:#94A3B8; }
+  .gallery-wrap { max-width: 1280px; margin: 0 auto; padding: var(--space-8); }
+  .gallery-section h2 { margin: var(--space-8) 0 var(--space-4); }
+  .thumbs { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: var(--space-6); }
+  .thumb { display:block; border:1px solid var(--border); border-radius: var(--radius); overflow:hidden; background:#fff; text-decoration:none; color:inherit; transition: box-shadow .15s, transform .15s; }
+  .thumb:hover { box-shadow: 0 8px 24px rgba(15,23,42,0.12); transform: translateY(-2px); text-decoration:none; }
+  .thumb__preview { position:relative; width:100%; height:180px; overflow:hidden; border-bottom:1px solid var(--border); background:var(--bg); }
+  .thumb__preview iframe { position:absolute; top:0; left:0; width:1400px; height:900px; border:0; transform: scale(0.2); transform-origin: top left; pointer-events:none; }
+  .thumb__preview .clickcatch { position:absolute; inset:0; z-index:2; }
+  .thumb__meta { padding: var(--space-3) var(--space-4); }
+  .thumb__meta .id { font-family: var(--font-mono); font-size:11px; color: var(--nexus-teal); }
+  .thumb__meta .name { font-weight:500; font-size:14px; margin-top:2px; }
+  .thumb__meta .url { font-family: var(--font-mono); font-size:11px; color: var(--muted); margin-top:2px; }
+</style>
+</head>
+<body style="background:var(--bg)">
+<script>try{sessionStorage.removeItem('nexusRole')}catch(e){}</script>
+<div class="gallery-head">
+  <div class="row">
+    <svg width="44" height="44" viewBox="0 0 32 32" fill="none" style="color:#fff">
+      <path d="M9 25 V7 L23 25 V7" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+      <circle cx="9" cy="7" r="3.5" fill="currentColor"/><circle cx="16" cy="16" r="3" fill="#22D3EE"/><circle cx="23" cy="25" r="3.5" fill="currentColor"/>
+    </svg>
+    <div>
+      <h1 class="h1">Nexus CA — Screen Mockups</h1>
+      <div class="tagline">Anchoring Trust. · Two views: by role (persona) and by feature</div>
+    </div>
+    <div style="margin-left:auto"><a class="btn btn--primary btn--lg" href="personas.html">Browse by role →</a></div>
+  </div>
+</div>
+
+<div class="gallery-wrap">
+  <div class="card" style="display:flex;align-items:center;gap:var(--space-4);border-left:4px solid var(--nexus-teal)">
+    <div style="font-size:28px">👥</div>
+    <div style="flex:1">
+      <div class="h3">Looking for the role-based view?</div>
+      <div class="muted body-sm">See what each of the 5 roles (ADMIN_MAKER, ADMIN_CHECKER, OPERATOR_MAKER, OPERATOR_CHECKER, AUDITOR) sees and does — role-correct dashboards, navigation, and the maker/checker split.</div>
+    </div>
+    <a class="btn btn--primary" href="personas.html">Open personas</a>
+  </div>
+
+  <p class="muted mt-6">Below is the <strong>by-feature</strong> catalogue — every screen in <code>Docs/1-Requirements/ui-screens.md</code>, styled to <code>branding.md</code>. Click any tile to open the full screen. No build step — these are static files; open in a browser.</p>
+  <div class="banner banner--info"><span>Action screens carry a <strong>“View as”</strong> role switcher (top-right). Switch between the 5 roles to see exactly which buttons, nav items and pages each role is permitted, per BRD §Permissions — e.g. an AUDITOR loses every action, OPERATORs cannot open Users / System Configuration, and only ADMIN_MAKER sees Create / Revoke / Edit.</span></div>
+
+  <div class="gallery-section">
+    <h2 class="h2">Authentication</h2>
+    <div class="thumbs">
+      <a class="thumb" href="S-000-login.html"><div class="thumb__preview"><iframe src="S-000-login.html" scrolling="no"></iframe><span class="clickcatch"></span></div><div class="thumb__meta"><div class="id">S-000</div><div class="name">Login</div><div class="url">/login</div></div></a>
+      <a class="thumb" href="S-001-login-mfa.html"><div class="thumb__preview"><iframe src="S-001-login-mfa.html" scrolling="no"></iframe><span class="clickcatch"></span></div><div class="thumb__meta"><div class="id">S-001</div><div class="name">MFA verification</div><div class="url">/login/mfa</div></div></a>
+      <a class="thumb" href="S-002-forgot-password.html"><div class="thumb__preview"><iframe src="S-002-forgot-password.html" scrolling="no"></iframe><span class="clickcatch"></span></div><div class="thumb__meta"><div class="id">S-002</div><div class="name">Forgot password</div><div class="url">/forgot-password</div></div></a>
+      <a class="thumb" href="S-002b-forgot-password-verify.html"><div class="thumb__preview"><iframe src="S-002b-forgot-password-verify.html" scrolling="no"></iframe><span class="clickcatch"></span></div><div class="thumb__meta"><div class="id">S-002b</div><div class="name">Reset &amp; verify</div><div class="url">/forgot-password/verify</div></div></a>
+      <a class="thumb" href="S-003-force-reset.html"><div class="thumb__preview"><iframe src="S-003-force-reset.html" scrolling="no"></iframe><span class="clickcatch"></span></div><div class="thumb__meta"><div class="id">S-003</div><div class="name">Force password reset</div><div class="url">/force-reset</div></div></a>
+    </div>
+  </div>
+
+  <div class="gallery-section">
+    <h2 class="h2">Global</h2>
+    <div class="thumbs">
+      <a class="thumb" href="S-100-dashboard.html"><div class="thumb__preview"><iframe src="S-100-dashboard.html" scrolling="no"></iframe><span class="clickcatch"></span></div><div class="thumb__meta"><div class="id">S-100</div><div class="name">Dashboard</div><div class="url">/</div></div></a>
+      <a class="thumb" href="S-102-profile.html"><div class="thumb__preview"><iframe src="S-102-profile.html" scrolling="no"></iframe><span class="clickcatch"></span></div><div class="thumb__meta"><div class="id">S-102</div><div class="name">Profile</div><div class="url">/profile</div></div></a>
+    </div>
+  </div>
+
+  <div class="gallery-section">
+    <h2 class="h2">Root CA Management</h2>
+    <div class="thumbs">
+      <a class="thumb" href="S-200-root-ca-list.html"><div class="thumb__preview"><iframe src="S-200-root-ca-list.html" scrolling="no"></iframe><span class="clickcatch"></span></div><div class="thumb__meta"><div class="id">S-200</div><div class="name">Root CA list</div><div class="url">/root-cas</div></div></a>
+      <a class="thumb" href="S-201-root-ca-detail.html"><div class="thumb__preview"><iframe src="S-201-root-ca-detail.html" scrolling="no"></iframe><span class="clickcatch"></span></div><div class="thumb__meta"><div class="id">S-201</div><div class="name">Root CA detail</div><div class="url">/root-cas/{id}</div></div></a>
+      <a class="thumb" href="S-202-root-ca-create.html"><div class="thumb__preview"><iframe src="S-202-root-ca-create.html" scrolling="no"></iframe><span class="clickcatch"></span></div><div class="thumb__meta"><div class="id">S-202</div><div class="name">Create Root CA</div><div class="url">/root-cas/new</div></div></a>
+      <a class="thumb" href="S-203-root-ca-revoke.html"><div class="thumb__preview"><iframe src="S-203-root-ca-revoke.html" scrolling="no"></iframe><span class="clickcatch"></span></div><div class="thumb__meta"><div class="id">S-203</div><div class="name">Revoke Root CA modal</div><div class="url">/root-cas/{id}</div></div></a>
+    </div>
+  </div>
+
+  <div class="gallery-section">
+    <h2 class="h2">Intermediate CA Management</h2>
+    <div class="thumbs">
+      <a class="thumb" href="S-300-intermediate-ca-list.html"><div class="thumb__preview"><iframe src="S-300-intermediate-ca-list.html" scrolling="no"></iframe><span class="clickcatch"></span></div><div class="thumb__meta"><div class="id">S-300</div><div class="name">Intermediate CA list</div><div class="url">/intermediate-cas</div></div></a>
+      <a class="thumb" href="S-301-intermediate-ca-detail.html"><div class="thumb__preview"><iframe src="S-301-intermediate-ca-detail.html" scrolling="no"></iframe><span class="clickcatch"></span></div><div class="thumb__meta"><div class="id">S-301</div><div class="name">Intermediate CA detail</div><div class="url">/intermediate-cas/{id}</div></div></a>
+      <a class="thumb" href="S-302-intermediate-ca-create.html"><div class="thumb__preview"><iframe src="S-302-intermediate-ca-create.html" scrolling="no"></iframe><span class="clickcatch"></span></div><div class="thumb__meta"><div class="id">S-302</div><div class="name">Create Intermediate CA</div><div class="url">/intermediate-cas/new</div></div></a>
+    </div>
+  </div>
+
+  <div class="gallery-section">
+    <h2 class="h2">Certificate Issuance</h2>
+    <div class="thumbs">
+      <a class="thumb" href="S-400-certificate-list.html"><div class="thumb__preview"><iframe src="S-400-certificate-list.html" scrolling="no"></iframe><span class="clickcatch"></span></div><div class="thumb__meta"><div class="id">S-400</div><div class="name">Certificate list</div><div class="url">/certificates</div></div></a>
+      <a class="thumb" href="S-401-certificate-detail.html"><div class="thumb__preview"><iframe src="S-401-certificate-detail.html" scrolling="no"></iframe><span class="clickcatch"></span></div><div class="thumb__meta"><div class="id">S-401</div><div class="name">Certificate detail</div><div class="url">/certificates/{id}</div></div></a>
+      <a class="thumb" href="S-402-certificate-submit-csr.html"><div class="thumb__preview"><iframe src="S-402-certificate-submit-csr.html" scrolling="no"></iframe><span class="clickcatch"></span></div><div class="thumb__meta"><div class="id">S-402</div><div class="name">Submit CSR</div><div class="url">/certificates/new</div></div></a>
+    </div>
+  </div>
+
+  <div class="gallery-section">
+    <h2 class="h2">Requests (Maker-Checker)</h2>
+    <div class="thumbs">
+      <a class="thumb" href="S-500-requests-pending.html"><div class="thumb__preview"><iframe src="S-500-requests-pending.html" scrolling="no"></iframe><span class="clickcatch"></span></div><div class="thumb__meta"><div class="id">S-500</div><div class="name">Pending requests</div><div class="url">/requests/pending</div></div></a>
+      <a class="thumb" href="S-501-request-review.html"><div class="thumb__preview"><iframe src="S-501-request-review.html" scrolling="no"></iframe><span class="clickcatch"></span></div><div class="thumb__meta"><div class="id">S-501</div><div class="name">Request review (diff)</div><div class="url">/requests/{id}</div></div></a>
+      <a class="thumb" href="S-502-request-history.html"><div class="thumb__preview"><iframe src="S-502-request-history.html" scrolling="no"></iframe><span class="clickcatch"></span></div><div class="thumb__meta"><div class="id">S-502</div><div class="name">Request history</div><div class="url">/requests/history</div></div></a>
+    </div>
+  </div>
+
+  <div class="gallery-section">
+    <h2 class="h2">User Management</h2>
+    <div class="thumbs">
+      <a class="thumb" href="S-600-user-list.html"><div class="thumb__preview"><iframe src="S-600-user-list.html" scrolling="no"></iframe><span class="clickcatch"></span></div><div class="thumb__meta"><div class="id">S-600</div><div class="name">User list</div><div class="url">/users</div></div></a>
+      <a class="thumb" href="S-601-user-detail.html"><div class="thumb__preview"><iframe src="S-601-user-detail.html" scrolling="no"></iframe><span class="clickcatch"></span></div><div class="thumb__meta"><div class="id">S-601</div><div class="name">User detail</div><div class="url">/users/{id}</div></div></a>
+      <a class="thumb" href="S-602-user-create.html"><div class="thumb__preview"><iframe src="S-602-user-create.html" scrolling="no"></iframe><span class="clickcatch"></span></div><div class="thumb__meta"><div class="id">S-602</div><div class="name">Create user</div><div class="url">/users/new</div></div></a>
+      <a class="thumb" href="S-603-reset-password.html"><div class="thumb__preview"><iframe src="S-603-reset-password.html" scrolling="no"></iframe><span class="clickcatch"></span></div><div class="thumb__meta"><div class="id">S-603</div><div class="name">Reset password modal</div><div class="url">/users/{id}</div></div></a>
+    </div>
+  </div>
+
+  <div class="gallery-section">
+    <h2 class="h2">Role Management <span class="badge badge--approved" style="vertical-align:middle">RBAC engine</span></h2>
+    <div class="thumbs">
+      <a class="thumb" href="S-610-role-list.html"><div class="thumb__preview"><iframe src="S-610-role-list.html" scrolling="no"></iframe><span class="clickcatch"></span></div><div class="thumb__meta"><div class="id">S-610</div><div class="name">Role list</div><div class="url">/roles</div></div></a>
+      <a class="thumb" href="S-611-role-detail.html"><div class="thumb__preview"><iframe src="S-611-role-detail.html" scrolling="no"></iframe><span class="clickcatch"></span></div><div class="thumb__meta"><div class="id">S-611</div><div class="name">Role detail</div><div class="url">/roles/{id}</div></div></a>
+      <a class="thumb" href="S-612-role-create.html"><div class="thumb__preview"><iframe src="S-612-role-create.html" scrolling="no"></iframe><span class="clickcatch"></span></div><div class="thumb__meta"><div class="id">S-612</div><div class="name">Create / Edit Role</div><div class="url">/roles/new</div></div></a>
+      <a class="thumb" href="S-613-role-delete.html"><div class="thumb__preview"><iframe src="S-613-role-delete.html" scrolling="no"></iframe><span class="clickcatch"></span></div><div class="thumb__meta"><div class="id">S-613</div><div class="name">Delete Role modal</div><div class="url">/roles/{id}</div></div></a>
+    </div>
+  </div>
+
+  <div class="gallery-section">
+    <h2 class="h2">System Configuration</h2>
+    <div class="thumbs">
+      <a class="thumb" href="S-700-system-configuration.html"><div class="thumb__preview"><iframe src="S-700-system-configuration.html" scrolling="no"></iframe><span class="clickcatch"></span></div><div class="thumb__meta"><div class="id">S-700</div><div class="name">System configuration</div><div class="url">/system-configuration</div></div></a>
+    </div>
+  </div>
+
+  <div class="gallery-section">
+    <h2 class="h2">Reports</h2>
+    <div class="thumbs">
+      <a class="thumb" href="S-800-report-root-cas.html"><div class="thumb__preview"><iframe src="S-800-report-root-cas.html" scrolling="no"></iframe><span class="clickcatch"></span></div><div class="thumb__meta"><div class="id">S-800</div><div class="name">Root CA report</div><div class="url">/reports/root-cas</div></div></a>
+      <a class="thumb" href="S-801-report-intermediate-cas.html"><div class="thumb__preview"><iframe src="S-801-report-intermediate-cas.html" scrolling="no"></iframe><span class="clickcatch"></span></div><div class="thumb__meta"><div class="id">S-801</div><div class="name">Intermediate CA report</div><div class="url">/reports/intermediate-cas</div></div></a>
+      <a class="thumb" href="S-802-report-certificates.html"><div class="thumb__preview"><iframe src="S-802-report-certificates.html" scrolling="no"></iframe><span class="clickcatch"></span></div><div class="thumb__meta"><div class="id">S-802</div><div class="name">Certificate report</div><div class="url">/reports/certificates</div></div></a>
+      <a class="thumb" href="S-803-report-users.html"><div class="thumb__preview"><iframe src="S-803-report-users.html" scrolling="no"></iframe><span class="clickcatch"></span></div><div class="thumb__meta"><div class="id">S-803</div><div class="name">User report</div><div class="url">/reports/users</div></div></a>
+      <a class="thumb" href="S-807-report-roles.html"><div class="thumb__preview"><iframe src="S-807-report-roles.html" scrolling="no"></iframe><span class="clickcatch"></span></div><div class="thumb__meta"><div class="id">S-807</div><div class="name">Role report</div><div class="url">/reports/roles</div></div></a>
+      <a class="thumb" href="S-804-report-pending-approval.html"><div class="thumb__preview"><iframe src="S-804-report-pending-approval.html" scrolling="no"></iframe><span class="clickcatch"></span></div><div class="thumb__meta"><div class="id">S-804</div><div class="name">Pending approval report</div><div class="url">/reports/pending-approval</div></div></a>
+      <a class="thumb" href="S-805-report-request-history.html"><div class="thumb__preview"><iframe src="S-805-report-request-history.html" scrolling="no"></iframe><span class="clickcatch"></span></div><div class="thumb__meta"><div class="id">S-805</div><div class="name">Request history report</div><div class="url">/reports/request-history</div></div></a>
+      <a class="thumb" href="S-806-report-audit.html"><div class="thumb__preview"><iframe src="S-806-report-audit.html" scrolling="no"></iframe><span class="clickcatch"></span></div><div class="thumb__meta"><div class="id">S-806</div><div class="name">Audit report</div><div class="url">/reports/audit</div></div></a>
+    </div>
+  </div>
+
+  <div class="gallery-section">
+    <h2 class="h2">Error &amp; Empty States</h2>
+    <div class="thumbs">
+      <a class="thumb" href="S-900-error-states.html"><div class="thumb__preview"><iframe src="S-900-error-states.html" scrolling="no"></iframe><span class="clickcatch"></span></div><div class="thumb__meta"><div class="id">S-900</div><div class="name">Error &amp; empty states</div><div class="url">404 · 403 · 500 · empty</div></div></a>
+    </div>
+  </div>
+
+  <p class="muted mt-8" style="padding-bottom:var(--space-16)">Generated from the Nexus CA documentation. Edit <code>assets/nexus.css</code> to retheme every screen at once.</p>
+</div>
+</body>
+</html>

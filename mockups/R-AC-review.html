@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Review REQ-2047 — Nexus CA (ADMIN_CHECKER)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/nexus.css">
+</head>
+<body>
+<script>try{sessionStorage.setItem('nexusRole','ADMIN_CHECKER')}catch(e){}</script>
+<div class="app">
+  <aside class="sidebar">
+    <div class="sidebar__brand">
+      <svg width="26" height="26" viewBox="0 0 32 32" fill="none" style="color:#fff">
+        <path d="M9 25 V7 L23 25 V7" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+        <circle cx="9" cy="7" r="3.5" fill="currentColor"/><circle cx="16" cy="16" r="3" fill="#22D3EE"/><circle cx="23" cy="25" r="3.5" fill="currentColor"/>
+      </svg>
+      <span class="wordmark">Nexus CA</span>
+    </div>
+    <nav class="sidebar__nav">
+      <a class="nav-item" href="R-AC-dashboard.html"><span class="ico">▦</span> Dashboard</a>
+      <div class="sidebar__section">Authorities</div>
+      <a class="nav-item" href="S-200-root-ca-list.html"><span class="ico">◈</span> Root CAs</a>
+      <a class="nav-item" href="S-300-intermediate-ca-list.html"><span class="ico">◇</span> Intermediate CAs</a>
+      <a class="nav-item" href="S-400-certificate-list.html"><span class="ico">▤</span> Certificates</a>
+      <div class="sidebar__section">Requests</div>
+      <a class="nav-item is-active" href="R-AC-pending-queue.html"><span class="ico">◷</span> Pending Requests <span class="role-badge" style="margin-left:auto">4</span></a>
+      <a class="nav-item" href="S-502-request-history.html"><span class="ico">⟲</span> Request History</a>
+      <div class="sidebar__section">Administration</div>
+      <a class="nav-item" href="S-600-user-list.html"><span class="ico">◔</span> Users</a>
+      <a class="nav-item" href="S-700-system-configuration.html"><span class="ico">⚙</span> System Configuration</a>
+      <a class="nav-item" href="S-800-report-root-cas.html"><span class="ico">▥</span> Reports</a>
+      <a class="nav-item" href="S-806-report-audit.html"><span class="ico">▣</span> Audit Log</a>
+      <a class="nav-item" href="S-102-profile.html"><span class="ico">◐</span> Profile</a>
+    </nav>
+    <div class="sidebar__user">
+      <div class="avatar">CC</div>
+      <div class="who"><div class="name">Carla Checker</div><span class="role-badge">ADMIN_CHECKER</span></div>
+      <a class="sidebar__signout" href="S-000-login.html" title="Sign out">⎋</a>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar"><div class="crumbs"><a href="R-AC-pending-queue.html">Pending Requests</a> / <b>REQ-2047</b></div><div class="spacer"></div><a class="body-sm" href="personas.html">Switch persona ↗</a></div>
+    <div class="content">
+      <div class="page-head"><div class="row gap-3"><h1 class="h1">Root CA Creation</h1><span class="badge badge--pending">PENDING_APPROVAL</span></div></div>
+
+      <div class="card">
+        <div class="card__title">Request header</div>
+        <dl class="dl">
+          <dt>Request ID</dt><dd class="mono">REQ-2047</dd>
+          <dt>Request Type</dt><dd>Root CA Creation</dd>
+          <dt>Target Entity</dt><dd>Nexus Internal Root CA G3 (new)</dd>
+          <dt>Submitted By</dt><dd>a.maker (ADMIN_MAKER)</dd>
+          <dt>Submitted Date</dt><dd class="mono">31 May 2026 10:14:02 UTC</dd>
+        </dl>
+      </div>
+
+      <div class="card">
+        <div class="card__title">Before / After</div>
+        <div class="snapshots">
+          <div class="snapshot snapshot--empty">
+            <div class="snapshot__head">Before — current state</div>
+            <div class="snapshot__body">No prior state — new entity</div>
+          </div>
+          <div class="snapshot">
+            <div class="snapshot__head">After — projected state</div>
+            <div class="snapshot__body">
+              <dl class="dl" style="grid-template-columns:140px 1fr">
+                <dt>Common Name</dt><dd>Nexus Internal Root CA G3</dd>
+                <dt>Organisation</dt><dd>Acme Corp</dd>
+                <dt>Country</dt><dd>US</dd>
+                <dt>Key</dt><dd class="mono">RSA 3072</dd>
+                <dt>Validity</dt><dd>20 years</dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card__title">Changed fields</div>
+        <div class="diff-row" aria-label="Added: Common Name = Nexus Internal Root CA G3"><div class="fname">Common Name</div><div><span class="chip chip--added">Nexus Internal Root CA G3</span></div></div>
+        <div class="diff-row" aria-label="Added: Organisation = Acme Corp"><div class="fname">Organisation</div><div><span class="chip chip--added">Acme Corp</span></div></div>
+        <div class="diff-row" aria-label="Added: Country = US"><div class="fname">Country</div><div><span class="chip chip--added">US</span></div></div>
+        <div class="diff-row" aria-label="Added: Key Algorithm = RSA"><div class="fname">Key Algorithm</div><div><span class="chip chip--added">RSA</span></div></div>
+        <div class="diff-row" aria-label="Added: Key Size = 3072"><div class="fname">Key Size</div><div><span class="chip chip--added">3072 bits</span></div></div>
+        <div class="diff-row" aria-label="Added: Validity = 20 years"><div class="fname">Validity Period</div><div><span class="chip chip--added">20 years</span></div></div>
+      </div>
+
+      <div class="card">
+        <div class="card__title">Decision</div>
+        <div class="field">
+          <label>Comment <span class="muted">(optional for approve, required for reject)</span></label>
+          <textarea class="textarea" placeholder="Add a comment…"></textarea>
+        </div>
+        <div class="row gap-3">
+          <button class="btn btn--primary">Approve</button>
+          <button class="btn btn--danger" disabled title="A comment is required to reject">Reject</button>
+        </div>
+        <div class="banner banner--info mt-4" style="margin-bottom:0"><span>On approval the Crypto API generates the keypair and self-signs the Root CA — the maker is notified on execution.</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="screen-tag">Persona: ADMIN_CHECKER · Review (create request)</div>
+</body>
+</html>

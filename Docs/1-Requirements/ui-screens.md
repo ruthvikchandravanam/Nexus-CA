@@ -73,8 +73,8 @@ Convention: A screen marked **role-visible** means a user in that role can reach
 | Aspect | Detail |
 |---|---|
 | Always visible | Logo, current user (name + role badge), Sign out |
-| Items (per role visibility) | Dashboard, Root CAs, Intermediate CAs, Certificates, Users, Requests (Pending + History), Reports, System Configuration, Audit Log, Profile |
-| Items hidden | Users hidden for OPERATOR_*; System Configuration hidden for OPERATOR_*, AUDITOR (view-only); Pending Requests hidden for AUDITOR |
+| Items (per role visibility) | Dashboard, Root CAs, Intermediate CAs, Certificates, Users, Roles, Requests (Pending + History), Reports, System Configuration, Audit Log, Profile |
+| Items hidden | Users and Roles hidden for OPERATOR_*; System Configuration hidden for OPERATOR_*, AUDITOR (view-only); Pending Requests hidden for AUDITOR. Navigation items are derived from the signed-in role's permissions per [§Role Management](BRD.md#role-management-configurable-rbac), not a fixed list. |
 
 ### S-102 Profile
 
@@ -211,6 +211,37 @@ The CSR preview (step 1) shows Subject DN, key algorithm and size, SAN entries. 
 
 ---
 
+## 6.1 Role management
+
+Surfaces for the configurable RBAC engine (BRD [§Role Management](BRD.md#role-management-configurable-rbac)). The five seeded roles and any custom roles are managed here.
+
+### S-610 Role list
+
+| URL | Role-visible | Data | Actions |
+|---|---|---|---|
+| `/roles` | ADMIN_MAKER, ADMIN_CHECKER, AUDITOR | List: ID, Name, Archetype (Maker/Checker/Viewer), Type (System/Custom), Permissions count, Assigned users, Status | Row → S-611; **Create Role** button (ADMIN_MAKER only) → S-612 |
+
+### S-611 Role detail
+
+| URL | Role-visible | Data | Actions per role |
+|---|---|---|---|
+| `/roles/{id}` | ADMIN_MAKER, ADMIN_CHECKER, AUDITOR | Name, archetype, system/custom flag, full permission grid (feature × operation), list of assigned users, created/approved metadata | ADMIN_MAKER: Edit → S-612, Delete → S-613. Archetype shown read-only. |
+
+### S-612 Create / Edit Role form
+
+| URL | Role-visible | Data | Actions |
+|---|---|---|---|
+| `/roles/new`, `/roles/{id}/edit` | ADMIN_MAKER | Step 1 — Name + **Archetype** (Maker / Checker / Viewer). Step 2 — permission grid scoped to the chosen archetype and to each feature's supported operations; **Edit/Delete columns appear only for User, Role, System Configuration**. | Submit → creates a `ROLE_CREATE` / `ROLE_EDIT` request, navigates to S-501 |
+
+The archetype is chosen at creation and is **read-only when editing** (changing maker↔checker would break segregation of duties — clone instead). The grid hides operations not valid for the archetype (Checker → View/Approve only; Viewer → View only).
+
+### S-613 Delete Role confirm modal (within S-611)
+
+| Data | Role name, count of assigned users, **reassignment picker** (target role for current holders), minimum-viability warning if deletion would orphan an approver/admin path |
+| Actions | Submit (danger button — opens confirmation, creates a `ROLE_DELETE` request), Cancel |
+
+---
+
 ## 7. System configuration
 
 ### S-700 System Configuration
@@ -231,6 +262,7 @@ Each of the 7 reports per BRD gets its own screen. URL pattern: `/reports/<name>
 | S-801 | `/reports/intermediate-cas` | All | BRD Intermediate CA Report |
 | S-802 | `/reports/certificates` | All | BRD Certificate Report |
 | S-803 | `/reports/users` | ADMIN_MAKER, ADMIN_CHECKER, AUDITOR | BRD User Report |
+| S-807 | `/reports/roles` | ADMIN_MAKER, ADMIN_CHECKER, AUDITOR | BRD Role Report |
 | S-804 | `/reports/pending-approval` | All (per BRD visibility) | BRD Pending Approval Report |
 | S-805 | `/reports/request-history` | All (per BRD visibility) | BRD Request History Report |
 | S-806 | `/reports/audit` | All | BRD Audit Report |
@@ -262,6 +294,8 @@ Each of the 7 reports per BRD gets its own screen. URL pattern: `/reports/<name>
 | S-501 Request review | — | ✓ (admin requests) | — | ✓ (cert requests) | ✓ (read-only) |
 | S-600 Users | ✓ | ✓ | — | — | ✓ |
 | S-602 Create User | ✓ | — | — | — | — |
+| S-610 Roles | ✓ | ✓ | — | — | ✓ |
+| S-612 Create / Edit Role | ✓ | — | — | — | — |
 | S-700 System Configuration | ✓ (edit) | ✓ (view) | — | — | ✓ (view) |
 | S-800..S-806 Reports | ✓ | ✓ | ✓ (relevant) | ✓ (relevant) | ✓ |
 

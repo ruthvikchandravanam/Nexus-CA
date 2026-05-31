@@ -48,6 +48,11 @@ Stable application error codes returned by the Business Logic API and Crypto API
 | `VAL-0055` | 400 | Maximum certificate validity must be between 1 and 3650 days | |
 | `VAL-0056` | 400 | Expiry warning must be between 1 and 365 days | |
 | `VAL-0057` | 400 | Pending escalation must be between 1 and 30 days | |
+| `VAL-0060` | 400 | Role name is missing, too long, or not unique | Role create/edit (WF-016/017) |
+| `VAL-0061` | 400 | Role archetype not recognized or cannot be changed | Archetype ∉ {MAKER, CHECKER, VIEWER}, or change attempted on edit |
+| `VAL-0062` | 400 | Permission is not in the catalogue or not valid for the archetype | e.g., Approve on a Maker role; an undefined (feature, operation) pair |
+| `VAL-0063` | 400 | Edit/Delete is not permitted for cryptographic entities | Edit/Delete operation selected for ROOT_CA, INTERMEDIATE_CA, or CERTIFICATE |
+| `VAL-0064` | 400 | A valid reassignment target role is required | Role deletion with assigned users (WF-018) |
 
 ### Authentication / Authorization (`AUTH-`)
 
@@ -81,8 +86,8 @@ Stable application error codes returned by the Business Logic API and Crypto API
 | `BUS-0032` | 409 | Validity exceeds parent CA validity | |
 | `BUS-0040` | 409 | Username already exists | |
 | `BUS-0041` | 409 | Email already exists | |
-| `BUS-0050` | 409 | Must retain at least one ADMIN_MAKER | |
-| `BUS-0051` | 409 | Must retain at least one ADMIN_CHECKER | |
+| `BUS-0050` | 409 | Must retain at least one ADMIN_MAKER | Seeded-default form of the minimum-viability rule; see `BUS-0104` for the generalised check |
+| `BUS-0051` | 409 | Must retain at least one ADMIN_CHECKER | Seeded-default form; see `BUS-0102` for the generalised check |
 | `BUS-0060` | 409 | CSR has already been used | csr_sha256 collision |
 | `BUS-0061` | 409 | Signing chain is not entirely active | |
 | `BUS-0062` | 409 | Validity exceeds signing CA validity | |
@@ -92,6 +97,11 @@ Stable application error codes returned by the Business Logic API and Crypto API
 | `BUS-0090` | 409 | Request has already been decided | Approve/reject after state change |
 | `BUS-0091` | 409 | Request was superseded by another executed request | |
 | `BUS-0092` | 409 | Maker cannot approve own request | (Same as `AUTH-0010` mapped at the request layer) |
+| `BUS-0100` | 409 | Duplicate role name | Role name collides with an existing non-deleted role |
+| `BUS-0101` | 409 | Role definition violates segregation of duties | A role would hold both maker and approve operations (normally prevented by the exclusive archetype) |
+| `BUS-0102` | 409 | Change would leave no active approver for a feature | Role edit/delete/disable/assignment that orphans approval for a feature (generalises `BUS-0051`) |
+| `BUS-0103` | 409 | Change would leave no active path to administer Roles or Users | Self-lockout guard for the RBAC engine |
+| `BUS-0104` | 409 | Change would leave no active Maker for a required feature | Generalises `BUS-0050` |
 
 ### Crypto (`CRYPTO-`)
 

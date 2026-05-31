@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Set New Password — Nexus CA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/nexus.css">
+</head>
+<body>
+<div class="auth">
+  <div class="auth__brandcol">
+    <svg width="56" height="56" viewBox="0 0 32 32" fill="none" style="color:#fff">
+      <path d="M9 25 V7 L23 25 V7" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+      <circle cx="9" cy="7" r="3.5" fill="currentColor"/>
+      <circle cx="16" cy="16" r="3" fill="#22D3EE"/>
+      <circle cx="23" cy="25" r="3.5" fill="currentColor"/>
+    </svg>
+    <div style="font-size:28px;font-weight:600;letter-spacing:.4px;">Nexus CA</div>
+    <div class="tagline">Anchoring Trust.</div>
+  </div>
+  <div class="auth__formcol">
+    <form class="auth__form" onsubmit="return false">
+      <h2 class="h2">Set a new password</h2>
+      <p class="sub">Your password has expired or this is your first login. Set a new password to continue.</p>
+      <div class="banner banner--warning" style="margin-bottom:var(--space-6)">
+        <span>A temporary password change is required before you can access Nexus CA.</span>
+      </div>
+      <div class="field">
+        <label for="otc">One-time code</label>
+        <input class="input input--mono" id="otc" type="text" maxlength="6" placeholder="000000">
+        <div class="help">Sent to your registered email address.</div>
+      </div>
+      <div class="field">
+        <label for="np">New password</label>
+        <input class="input" id="np" type="password" placeholder="At least 12 characters">
+      </div>
+      <div class="field">
+        <label for="cp">Confirm new password</label>
+        <input class="input" id="cp" type="password" placeholder="Re-enter new password">
+      </div>
+      <button class="btn btn--primary btn--lg btn--block" type="submit">Save and continue</button>
+    </form>
+  </div>
+</div>
+<div class="screen-tag">S-003 · /force-reset</div>
+</body>
+</html>

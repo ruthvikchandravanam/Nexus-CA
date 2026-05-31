@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nexus CA — Role Personas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/nexus.css">
+<style>
+  .hero { background: var(--nexus-navy); color:#fff; padding: var(--space-12) var(--space-8); }
+  .hero h1 { color:#fff; font-size:32px; }
+  .hero .tagline { color:#94A3B8; }
+  .wrap-c { max-width: 1280px; margin: 0 auto; padding: var(--space-8); }
+  .persona { border:1px solid var(--border); border-radius:var(--radius); background:#fff; overflow:hidden; }
+  .persona__head { display:flex; align-items:center; gap:var(--space-3); padding:var(--space-4) var(--space-6); border-bottom:1px solid var(--border); }
+  .persona__head .avatar { width:40px;height:40px;flex:0 0 40px;font-size:14px; }
+  .persona__head h3 { font-size:18px; }
+  .persona__body { padding: var(--space-6); }
+  .persona__desc { color:var(--muted); margin:0 0 var(--space-4); }
+  .can { list-style:none; margin:0 0 var(--space-4); padding:0; }
+  .can li { display:flex; gap:var(--space-2); padding:3px 0; font-size:13px; }
+  .can li .y { color:var(--success); } .can li .n { color:var(--disabled); }
+  .persona__links { display:flex; flex-wrap:wrap; gap:var(--space-2); }
+  .role-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(360px,1fr)); gap:var(--space-6); }
+  .pillrow { display:flex; gap:var(--space-2); flex-wrap:wrap; margin-bottom:var(--space-4); }
+</style>
+</head>
+<body style="background:var(--bg)">
+<div class="hero">
+  <div class="wrap-c" style="padding-left:0;padding-right:0">
+    <div class="row" style="gap:var(--space-4)">
+      <svg width="44" height="44" viewBox="0 0 32 32" fill="none" style="color:#fff">
+        <path d="M9 25 V7 L23 25 V7" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+        <circle cx="9" cy="7" r="3.5" fill="currentColor"/><circle cx="16" cy="16" r="3" fill="#22D3EE"/><circle cx="23" cy="25" r="3.5" fill="currentColor"/>
+      </svg>
+      <div>
+        <h1 class="h1">Nexus CA — Role Personas</h1>
+        <div class="tagline">What each of the five roles sees and does. Built from BRD §Roles, §Permissions and §Request Visibility.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap-c">
+  <div class="pillrow">
+    <a class="btn btn--secondary btn--sm" href="index.html">← Feature catalogue (all 32 screens)</a>
+  </div>
+  <p class="muted">Each persona below links to a role-correct dashboard and that role's signature screens — note how the navigation sidebar and the available actions change per role. The maker/checker split is enforced: <strong>makers cannot see the approval queue</strong>; only checkers and the auditor do.</p>
+
+  <div class="role-grid mt-6">
+
+    <!-- ADMIN_MAKER -->
+    <div class="persona">
+      <div class="persona__head"><div class="avatar">AM</div><div><h3 class="h3">ADMIN_MAKER</h3><span class="role-badge role-badge--solid">Initiator · Admin</span></div></div>
+      <div class="persona__body">
+        <p class="persona__desc">Initiates administrative requests: CA management, user management, certificate revocation, and system configuration.</p>
+        <ul class="can">
+          <li><span class="y">✓</span> Create / Enable-Disable / Revoke Root &amp; Intermediate CAs</li>
+          <li><span class="y">✓</span> Create users, assign roles, reset passwords</li>
+          <li><span class="y">✓</span> Create / edit / delete custom roles (RBAC engine)</li>
+          <li><span class="y">✓</span> Edit System Configuration (submits change request)</li>
+          <li><span class="n">✗</span> Cannot approve — no approval queue in nav</li>
+        </ul>
+        <div class="persona__links">
+          <a class="btn btn--primary btn--sm" href="R-AM-dashboard.html">Dashboard</a>
+          <a class="btn btn--secondary btn--sm" href="R-AM-create-root-ca.html">Create Root CA</a>
+          <a class="btn btn--secondary btn--sm" href="R-AM-create-intermediate-ca.html">Create Intermediate CA</a>
+          <a class="btn btn--secondary btn--sm" href="S-610-role-list.html">Manage Roles</a>
+          <a class="btn btn--secondary btn--sm" href="R-AM-system-config.html">System Config</a>
+          <a class="btn btn--secondary btn--sm" href="R-AM-my-requests.html">My Requests</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADMIN_CHECKER -->
+    <div class="persona">
+      <div class="persona__head"><div class="avatar">AC</div><div><h3 class="h3">ADMIN_CHECKER</h3><span class="role-badge role-badge--solid">Approver · Admin</span></div></div>
+      <div class="persona__body">
+        <p class="persona__desc">Reviews and approves or rejects administrative requests submitted by ADMIN_MAKER.</p>
+        <ul class="can">
+          <li><span class="y">✓</span> Approve / Reject CA, user, role, revocation &amp; config requests</li>
+          <li><span class="y">✓</span> View all administrative requests &amp; field-level diffs</li>
+          <li><span class="n">✗</span> Cannot initiate requests or edit configuration</li>
+          <li><span class="n">✗</span> Cannot approve a request they submitted (self-approval blocked)</li>
+        </ul>
+        <div class="persona__links">
+          <a class="btn btn--primary btn--sm" href="R-AC-dashboard.html">Dashboard</a>
+          <a class="btn btn--secondary btn--sm" href="R-AC-pending-queue.html">Approval Queue</a>
+          <a class="btn btn--secondary btn--sm" href="R-AC-review.html">Review Request</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- OPERATOR_MAKER -->
+    <div class="persona">
+      <div class="persona__head"><div class="avatar">OM</div><div><h3 class="h3">OPERATOR_MAKER</h3><span class="role-badge role-badge--solid">Initiator · Operations</span></div></div>
+      <div class="persona__body">
+        <p class="persona__desc">Submits certificate issuance requests and downloads the issued certificate.</p>
+        <ul class="can">
+          <li><span class="y">✓</span> Submit CSR for CLIENT / SERVER / SIGNING issuance</li>
+          <li><span class="y">✓</span> Download issued certificate (first download → COMPLETED)</li>
+          <li><span class="n">✗</span> No Users or System Configuration in nav</li>
+          <li><span class="n">✗</span> Cannot approve — no approval queue in nav</li>
+        </ul>
+        <div class="persona__links">
+          <a class="btn btn--primary btn--sm" href="R-OM-dashboard.html">Dashboard</a>
+          <a class="btn btn--secondary btn--sm" href="R-OM-submit-csr.html">Submit CSR</a>
+          <a class="btn btn--secondary btn--sm" href="R-OM-certificate-download.html">Download Cert</a>
+          <a class="btn btn--secondary btn--sm" href="R-OM-my-requests.html">My Requests</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- OPERATOR_CHECKER -->
+    <div class="persona">
+      <div class="persona__head"><div class="avatar">OC</div><div><h3 class="h3">OPERATOR_CHECKER</h3><span class="role-badge role-badge--solid">Approver · Operations</span></div></div>
+      <div class="persona__body">
+        <p class="persona__desc">Reviews and approves or rejects certificate issuance requests.</p>
+        <ul class="can">
+          <li><span class="y">✓</span> Approve / Reject certificate issuance requests</li>
+          <li><span class="y">✓</span> View CSR detail, chosen CA, type, validity, output format</li>
+          <li><span class="y">✓</span> May download issued certificate (does not trigger COMPLETED)</li>
+          <li><span class="n">✗</span> No Users or System Configuration in nav</li>
+        </ul>
+        <div class="persona__links">
+          <a class="btn btn--primary btn--sm" href="R-OC-dashboard.html">Dashboard</a>
+          <a class="btn btn--secondary btn--sm" href="R-OC-pending-queue.html">Issuance Queue</a>
+          <a class="btn btn--secondary btn--sm" href="R-OC-review.html">Review Issuance</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- AUDITOR -->
+    <div class="persona">
+      <div class="persona__head"><div class="avatar">AU</div><div><h3 class="h3">AUDITOR</h3><span class="role-badge role-badge--solid">Read-only · Compliance</span></div></div>
+      <div class="persona__body">
+        <p class="persona__desc">Read-only access to all data across the platform for compliance and audit purposes.</p>
+        <ul class="can">
+          <li><span class="y">✓</span> View every CA, certificate, user, request &amp; report</li>
+          <li><span class="y">✓</span> View all requests of all types (read-only)</li>
+          <li><span class="y">✓</span> Full audit log access</li>
+          <li><span class="n">✗</span> No create, edit, approve, or download actions anywhere</li>
+        </ul>
+        <div class="persona__links">
+          <a class="btn btn--primary btn--sm" href="R-AU-dashboard.html">Dashboard</a>
+          <a class="btn btn--secondary btn--sm" href="R-AU-readonly-view.html">Read-only Request</a>
+          <a class="btn btn--secondary btn--sm" href="R-AU-audit.html">Audit Log</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <p class="muted mt-8" style="padding-bottom:var(--space-16)">Personas reuse the same design system (<code>assets/nexus.css</code>) as the feature catalogue.</p>
+</div>
+</body>
+</html>

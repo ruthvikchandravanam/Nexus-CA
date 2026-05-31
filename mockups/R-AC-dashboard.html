@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dashboard — Nexus CA (ADMIN_CHECKER)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/nexus.css">
+</head>
+<body>
+<script>try{sessionStorage.setItem('nexusRole','ADMIN_CHECKER')}catch(e){}</script>
+<div class="app">
+  <aside class="sidebar">
+    <div class="sidebar__brand">
+      <svg width="26" height="26" viewBox="0 0 32 32" fill="none" style="color:#fff">
+        <path d="M9 25 V7 L23 25 V7" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+        <circle cx="9" cy="7" r="3.5" fill="currentColor"/><circle cx="16" cy="16" r="3" fill="#22D3EE"/><circle cx="23" cy="25" r="3.5" fill="currentColor"/>
+      </svg>
+      <span class="wordmark">Nexus CA</span>
+    </div>
+    <nav class="sidebar__nav">
+      <a class="nav-item is-active" href="R-AC-dashboard.html"><span class="ico">▦</span> Dashboard</a>
+      <div class="sidebar__section">Authorities</div>
+      <a class="nav-item" href="S-200-root-ca-list.html"><span class="ico">◈</span> Root CAs</a>
+      <a class="nav-item" href="S-300-intermediate-ca-list.html"><span class="ico">◇</span> Intermediate CAs</a>
+      <a class="nav-item" href="S-400-certificate-list.html"><span class="ico">▤</span> Certificates</a>
+      <div class="sidebar__section">Requests</div>
+      <a class="nav-item" href="R-AC-pending-queue.html"><span class="ico">◷</span> Pending Requests <span class="role-badge" style="margin-left:auto">4</span></a>
+      <a class="nav-item" href="S-502-request-history.html"><span class="ico">⟲</span> Request History</a>
+      <div class="sidebar__section">Administration</div>
+      <a class="nav-item" href="S-600-user-list.html"><span class="ico">◔</span> Users</a>
+      <a class="nav-item" href="S-700-system-configuration.html"><span class="ico">⚙</span> System Configuration</a>
+      <a class="nav-item" href="S-800-report-root-cas.html"><span class="ico">▥</span> Reports</a>
+      <a class="nav-item" href="S-806-report-audit.html"><span class="ico">▣</span> Audit Log</a>
+      <a class="nav-item" href="S-102-profile.html"><span class="ico">◐</span> Profile</a>
+    </nav>
+    <div class="sidebar__user">
+      <div class="avatar">CC</div>
+      <div class="who"><div class="name">Carla Checker</div><span class="role-badge">ADMIN_CHECKER</span></div>
+      <a class="sidebar__signout" href="S-000-login.html" title="Sign out">⎋</a>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="crumbs"><b>Dashboard</b></div>
+      <div class="spacer"></div>
+      <a class="body-sm" href="personas.html">Switch persona ↗</a>
+    </div>
+    <div class="content">
+      <div class="page-head">
+        <div><h1 class="h1">Welcome back, Carla</h1><div class="sub">ADMIN_CHECKER · you review and decide administrative requests.</div></div>
+        <a class="btn btn--primary" href="R-AC-pending-queue.html">Review queue →</a>
+      </div>
+
+      <div class="grid grid--4 mb-6">
+        <div class="stat"><div class="k">Awaiting my decision</div><div class="v" style="color:var(--action-blue)">4</div><div class="meta">Admin requests</div></div>
+        <div class="stat"><div class="k">Approved today</div><div class="v">2</div><div class="meta">31 May 2026</div></div>
+        <div class="stat"><div class="k">Rejected today</div><div class="v">0</div><div class="meta">31 May 2026</div></div>
+        <div class="stat"><div class="k">Oldest pending</div><div class="v" style="color:var(--warning-text)">5 days</div><div class="meta">Escalation at 3 days</div></div>
+      </div>
+
+      <div class="card">
+        <div class="row row--between mb-4"><div class="card__title" style="margin:0">Requests awaiting your decision</div><a class="btn btn--ghost btn--sm" href="R-AC-pending-queue.html">Open full queue →</a></div>
+        <div class="banner banner--warning"><span>2 requests have passed the 3-day escalation threshold.</span></div>
+        <div class="table-wrap" style="border:none">
+          <table class="tbl">
+            <thead><tr><th>Request ID</th><th>Type</th><th>Target</th><th>Submitted By</th><th>Days Pending</th><th></th></tr></thead>
+            <tbody>
+              <tr><td class="mono">REQ-2048</td><td>Role Assignment</td><td>p.singh</td><td>a.maker</td><td><span class="badge badge--expired">4 days</span></td><td><a class="btn btn--primary btn--sm" href="R-AC-review.html">Review</a></td></tr>
+              <tr><td class="mono">REQ-2045</td><td>System Configuration</td><td>4 parameters</td><td>a.maker</td><td><span class="badge badge--expired">5 days</span></td><td><a class="btn btn--primary btn--sm" href="R-AC-review.html">Review</a></td></tr>
+              <tr><td class="mono">REQ-2047</td><td>Root CA Creation</td><td>Root CA G3</td><td>a.maker</td><td>1 day</td><td><a class="btn btn--primary btn--sm" href="R-AC-review.html">Review</a></td></tr>
+              <tr><td class="mono">REQ-2046</td><td>User Creation</td><td>m.torres</td><td>a.maker</td><td>1 day</td><td><a class="btn btn--primary btn--sm" href="R-AC-review.html">Review</a></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="screen-tag">Persona: ADMIN_CHECKER · Dashboard</div>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Priya Singh — User Management — Nexus CA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/nexus.css">
+</head>
+<body data-page-roles="ADMIN_MAKER ADMIN_CHECKER AUDITOR">
+<div class="app">
+  <aside class="sidebar">
+    <div class="sidebar__brand">
+      <svg width="26" height="26" viewBox="0 0 32 32" fill="none" style="color:#fff">
+        <path d="M9 25 V7 L23 25 V7" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+        <circle cx="9" cy="7" r="3.5" fill="currentColor"/><circle cx="16" cy="16" r="3" fill="#22D3EE"/><circle cx="23" cy="25" r="3.5" fill="currentColor"/>
+      </svg>
+      <span class="wordmark">Nexus CA</span>
+    </div>
+    <nav class="sidebar__nav">
+      <a class="nav-item" href="S-100-dashboard.html"><span class="ico">▦</span> Dashboard</a>
+      <div class="sidebar__section">Authorities</div>
+      <a class="nav-item" href="S-200-root-ca-list.html"><span class="ico">◈</span> Root CAs</a>
+      <a class="nav-item" href="S-300-intermediate-ca-list.html"><span class="ico">◇</span> Intermediate CAs</a>
+      <a class="nav-item" href="S-400-certificate-list.html"><span class="ico">▤</span> Certificates</a>
+      <div class="sidebar__section">Requests</div>
+      <a class="nav-item" href="S-500-requests-pending.html" data-roles="ADMIN_CHECKER OPERATOR_CHECKER AUDITOR"><span class="ico">◷</span> Pending Requests</a>
+      <a class="nav-item" href="S-502-request-history.html"><span class="ico">⟲</span> Request History</a>
+      <div class="sidebar__section">Administration</div>
+      <a class="nav-item is-active" href="S-600-user-list.html"><span class="ico">◔</span> Users</a>
+      <a class="nav-item" href="S-610-role-list.html" data-roles="ADMIN_MAKER ADMIN_CHECKER AUDITOR"><span class="ico">◎</span> Roles</a>
+      <a class="nav-item" href="S-700-system-configuration.html" data-roles="ADMIN_MAKER ADMIN_CHECKER AUDITOR"><span class="ico">⚙</span> System Configuration</a>
+      <a class="nav-item" href="S-800-report-root-cas.html"><span class="ico">▥</span> Reports</a>
+      <a class="nav-item" href="S-806-report-audit.html"><span class="ico">▣</span> Audit Log</a>
+      <a class="nav-item" href="S-102-profile.html"><span class="ico">◐</span> Profile</a>
+    </nav>
+    <div class="sidebar__user">
+      <div class="avatar">AM</div>
+      <div class="who"><div class="name">Alex Maker</div><span class="role-badge">ADMIN_MAKER</span></div>
+      <a class="sidebar__signout" href="S-000-login.html" title="Sign out">⎋</a>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar"><div class="crumbs"><a href="S-600-user-list.html">Users</a> / <b>USR-0031</b></div></div>
+    <div class="content">
+      <div class="page-head">
+        <div class="row gap-3"><h1 class="h1">Priya Singh</h1><span class="badge badge--active">ACTIVE</span></div>
+        <div class="wrap">
+          <button class="btn btn--secondary" data-roles="ADMIN_MAKER">Reassign Role</button>
+          <button class="btn btn--secondary" data-roles="ADMIN_MAKER">Disable</button>
+          <a class="btn btn--secondary" href="S-603-reset-password.html" data-roles="ADMIN_MAKER">Reset Password</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card__title">Account</div>
+        <dl class="dl">
+          <dt>User ID</dt><dd class="mono">USR-0031</dd>
+          <dt>Full Name</dt><dd>Priya Singh</dd>
+          <dt>Username</dt><dd class="mono">p.singh</dd>
+          <dt>Email</dt><dd>priya.singh@acme.com</dd>
+          <dt>Role</dt><dd><span class="role-badge role-badge--solid">OPERATOR_MAKER</span></dd>
+          <dt>Status</dt><dd><span class="badge badge--active">ACTIVE</span></dd>
+          <dt>Password Expires</dt><dd class="mono">12 Jun 2026</dd>
+          <dt>Last Login</dt><dd class="mono">30 May 2026 16:45:09 UTC</dd>
+        </dl>
+      </div>
+
+      <div class="card">
+        <div class="card__title">Requests initiated by this user</div>
+        <div class="table-wrap" style="border:none">
+          <table class="tbl">
+            <thead><tr><th>Request ID</th><th>Type</th><th>Date</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td class="mono">REQ-2044</td><td>Certificate Issuance</td><td>31 May 2026</td><td><span class="badge badge--completed">COMPLETED</span></td></tr>
+              <tr><td class="mono">REQ-2012</td><td>Certificate Issuance</td><td>20 May 2026</td><td><span class="badge badge--completed">COMPLETED</span></td></tr>
+              <tr><td class="mono">REQ-1998</td><td>Certificate Issuance</td><td>14 May 2026</td><td><span class="badge badge--rejected">REJECTED</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="screen-tag">S-601 · /users/{id}</div>
+<script src="assets/rbac.js"></script>
+</body>
+</html>

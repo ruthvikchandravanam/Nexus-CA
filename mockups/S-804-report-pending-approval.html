@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pending Approval Report — Reports — Nexus CA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/nexus.css">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="sidebar__brand">
+      <svg width="26" height="26" viewBox="0 0 32 32" fill="none" style="color:#fff">
+        <path d="M9 25 V7 L23 25 V7" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+        <circle cx="9" cy="7" r="3.5" fill="currentColor"/><circle cx="16" cy="16" r="3" fill="#22D3EE"/><circle cx="23" cy="25" r="3.5" fill="currentColor"/>
+      </svg>
+      <span class="wordmark">Nexus CA</span>
+    </div>
+    <nav class="sidebar__nav">
+      <a class="nav-item" href="S-100-dashboard.html"><span class="ico">▦</span> Dashboard</a>
+      <div class="sidebar__section">Authorities</div>
+      <a class="nav-item" href="S-200-root-ca-list.html"><span class="ico">◈</span> Root CAs</a>
+      <a class="nav-item" href="S-300-intermediate-ca-list.html"><span class="ico">◇</span> Intermediate CAs</a>
+      <a class="nav-item" href="S-400-certificate-list.html"><span class="ico">▤</span> Certificates</a>
+      <div class="sidebar__section">Requests</div>
+      <a class="nav-item" href="S-500-requests-pending.html" data-roles="ADMIN_CHECKER OPERATOR_CHECKER AUDITOR"><span class="ico">◷</span> Pending Requests</a>
+      <a class="nav-item" href="S-502-request-history.html"><span class="ico">⟲</span> Request History</a>
+      <div class="sidebar__section">Reports</div>
+      <a class="nav-item is-active" href="S-800-report-root-cas.html"><span class="ico">▥</span> Reports</a>
+      <a class="nav-item" href="S-806-report-audit.html"><span class="ico">▣</span> Audit Log</a>
+      <a class="nav-item" href="S-102-profile.html"><span class="ico">◐</span> Profile</a>
+    </nav>
+    <div class="sidebar__user">
+      <div class="avatar">AK</div>
+      <div class="who"><div class="name">Aisha Khan</div><span class="role-badge">AUDITOR</span></div>
+      <a class="sidebar__signout" href="S-000-login.html" title="Sign out">⎋</a>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar"><div class="crumbs">Reports / <b>Pending Approval</b></div></div>
+    <div class="content">
+      <div class="page-head"><div><h1 class="h1">Reports</h1><div class="sub">Flat lists sorted by creation date, newest first. Read-only.</div></div></div>
+      <div class="wrap mb-6">
+        <a class="btn btn--sm btn--secondary" href="S-800-report-root-cas.html">Root CAs</a>
+        <a class="btn btn--sm btn--secondary" href="S-801-report-intermediate-cas.html">Intermediate CAs</a>
+        <a class="btn btn--sm btn--secondary" href="S-802-report-certificates.html">Certificates</a>
+        <a class="btn btn--sm btn--secondary" href="S-803-report-users.html" data-roles="ADMIN_MAKER ADMIN_CHECKER AUDITOR">Users</a>
+        <a class="btn btn--sm btn--secondary" href="S-807-report-roles.html" data-roles="ADMIN_MAKER ADMIN_CHECKER AUDITOR">Roles</a>
+        <a class="btn btn--sm btn--primary" href="S-804-report-pending-approval.html">Pending Approval</a>
+        <a class="btn btn--sm btn--secondary" href="S-805-report-request-history.html">Request History</a>
+        <a class="btn btn--sm btn--secondary" href="S-806-report-audit.html">Audit</a>
+      </div>
+
+      <div class="table-wrap">
+        <table class="tbl">
+          <thead><tr><th>Request ID</th><th>Request Type</th><th>Target Entity</th><th>Submitted By</th><th>Submitted Date</th><th>Status</th><th>Assigned Checker Role</th><th>Days Pending</th></tr></thead>
+          <tbody>
+            <tr><td class="mono">REQ-2048</td><td>Role Assignment</td><td>p.singh (USR-0031)</td><td>a.maker</td><td>30 May 2026</td><td><span class="badge badge--pending">PENDING_APPROVAL</span></td><td>ADMIN_CHECKER</td><td>4 days</td></tr>
+            <tr><td class="mono">REQ-2047</td><td>Root CA Creation</td><td>Nexus Internal Root CA G3</td><td>a.maker</td><td>31 May 2026</td><td><span class="badge badge--pending">PENDING_APPROVAL</span></td><td>ADMIN_CHECKER</td><td>1 day</td></tr>
+            <tr><td class="mono">REQ-2046</td><td>User Creation</td><td>m.torres (new)</td><td>a.maker</td><td>31 May 2026</td><td><span class="badge badge--pending">PENDING_APPROVAL</span></td><td>ADMIN_CHECKER</td><td>1 day</td></tr>
+            <tr><td class="mono">REQ-2045</td><td>System Configuration</td><td>4 parameters</td><td>a.maker</td><td>29 May 2026</td><td><span class="badge badge--pending">PENDING_APPROVAL</span></td><td>ADMIN_CHECKER</td><td>5 days</td></tr>
+            <tr><td class="mono">REQ-2043</td><td>Certificate Issuance</td><td>vpn.acme.com</td><td>o.maker</td><td>31 May 2026</td><td><span class="badge badge--pending">PENDING_APPROVAL</span></td><td>OPERATOR_CHECKER</td><td>1 day</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="screen-tag">S-804 · /reports/pending-approval</div>
+<script src="assets/rbac.js"></script>
+</body>
+</html>

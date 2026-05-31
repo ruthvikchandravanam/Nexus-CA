@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>User Management — Nexus CA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/nexus.css">
+</head>
+<body data-page-roles="ADMIN_MAKER ADMIN_CHECKER AUDITOR">
+<div class="app">
+  <aside class="sidebar">
+    <div class="sidebar__brand">
+      <svg width="26" height="26" viewBox="0 0 32 32" fill="none" style="color:#fff">
+        <path d="M9 25 V7 L23 25 V7" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+        <circle cx="9" cy="7" r="3.5" fill="currentColor"/><circle cx="16" cy="16" r="3" fill="#22D3EE"/><circle cx="23" cy="25" r="3.5" fill="currentColor"/>
+      </svg>
+      <span class="wordmark">Nexus CA</span>
+    </div>
+    <nav class="sidebar__nav">
+      <a class="nav-item" href="S-100-dashboard.html"><span class="ico">▦</span> Dashboard</a>
+      <div class="sidebar__section">Authorities</div>
+      <a class="nav-item" href="S-200-root-ca-list.html"><span class="ico">◈</span> Root CAs</a>
+      <a class="nav-item" href="S-300-intermediate-ca-list.html"><span class="ico">◇</span> Intermediate CAs</a>
+      <a class="nav-item" href="S-400-certificate-list.html"><span class="ico">▤</span> Certificates</a>
+      <div class="sidebar__section">Requests</div>
+      <a class="nav-item" href="S-500-requests-pending.html" data-roles="ADMIN_CHECKER OPERATOR_CHECKER AUDITOR"><span class="ico">◷</span> Pending Requests</a>
+      <a class="nav-item" href="S-502-request-history.html"><span class="ico">⟲</span> Request History</a>
+      <div class="sidebar__section">Administration</div>
+      <a class="nav-item is-active" href="S-600-user-list.html"><span class="ico">◔</span> Users</a>
+      <a class="nav-item" href="S-610-role-list.html" data-roles="ADMIN_MAKER ADMIN_CHECKER AUDITOR"><span class="ico">◎</span> Roles</a>
+      <a class="nav-item" href="S-700-system-configuration.html" data-roles="ADMIN_MAKER ADMIN_CHECKER AUDITOR"><span class="ico">⚙</span> System Configuration</a>
+      <a class="nav-item" href="S-800-report-root-cas.html"><span class="ico">▥</span> Reports</a>
+      <a class="nav-item" href="S-806-report-audit.html"><span class="ico">▣</span> Audit Log</a>
+      <a class="nav-item" href="S-102-profile.html"><span class="ico">◐</span> Profile</a>
+    </nav>
+    <div class="sidebar__user">
+      <div class="avatar">AM</div>
+      <div class="who"><div class="name">Alex Maker</div><span class="role-badge">ADMIN_MAKER</span></div>
+      <a class="sidebar__signout" href="S-000-login.html" title="Sign out">⎋</a>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar"><div class="crumbs"><b>Users</b></div></div>
+    <div class="content">
+      <div class="page-head">
+        <div><h1 class="h1">Users</h1><div class="sub">Platform accounts and their assigned roles.</div></div>
+        <a class="btn btn--primary" href="S-602-user-create.html" data-roles="ADMIN_MAKER">+ Create User</a>
+      </div>
+      <div class="table-wrap">
+        <table class="tbl">
+          <thead><tr><th>User ID</th><th>Full Name</th><th>Username</th><th>Email</th><th>Role</th><th>Status</th><th>Last Login</th></tr></thead>
+          <tbody>
+            <tr class="clickable" onclick="location.href='S-601-user-detail.html'"><td class="mono">USR-0012</td><td>Alex Maker</td><td class="mono">a.maker</td><td>alex.maker@acme.com</td><td><span class="role-badge role-badge--solid">ADMIN_MAKER</span></td><td><span class="badge badge--active">ACTIVE</span></td><td class="mono">31 May 08:12 UTC</td></tr>
+            <tr class="clickable" onclick="location.href='S-601-user-detail.html'"><td class="mono">USR-0013</td><td>Carla Checker</td><td class="mono">c.checker</td><td>carla.checker@acme.com</td><td><span class="role-badge role-badge--solid">ADMIN_CHECKER</span></td><td><span class="badge badge--active">ACTIVE</span></td><td class="mono">31 May 09:30 UTC</td></tr>
+            <tr class="clickable" onclick="location.href='S-601-user-detail.html'"><td class="mono">USR-0031</td><td>Priya Singh</td><td class="mono">p.singh</td><td>priya.singh@acme.com</td><td><span class="role-badge role-badge--solid">OPERATOR_MAKER</span></td><td><span class="badge badge--active">ACTIVE</span></td><td class="mono">30 May 16:45 UTC</td></tr>
+            <tr class="clickable" onclick="location.href='S-601-user-detail.html'"><td class="mono">USR-0032</td><td>Paul Checker</td><td class="mono">p.checker</td><td>paul.checker@acme.com</td><td><span class="role-badge role-badge--solid">OPERATOR_CHECKER</span></td><td><span class="badge badge--active">ACTIVE</span></td><td class="mono">31 May 09:41 UTC</td></tr>
+            <tr class="clickable" onclick="location.href='S-601-user-detail.html'"><td class="mono">USR-0040</td><td>Aisha Khan</td><td class="mono">a.khan</td><td>aisha.khan@acme.com</td><td><span class="role-badge role-badge--solid">AUDITOR</span></td><td><span class="badge badge--active">ACTIVE</span></td><td class="mono">29 May 11:02 UTC</td></tr>
+            <tr class="clickable" onclick="location.href='S-601-user-detail.html'"><td class="mono">USR-0028</td><td>John Lee</td><td class="mono">j.lee</td><td>john.lee@acme.com</td><td><span class="role-badge role-badge--solid">OPERATOR_MAKER</span></td><td><span class="badge badge--disabled">DISABLED</span></td><td class="mono">12 May 10:20 UTC</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="screen-tag">S-600 · /users</div>
+<script src="assets/rbac.js"></script>
+</body>
+</html>

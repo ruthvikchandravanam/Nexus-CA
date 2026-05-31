@@ -10,7 +10,7 @@ Internal Certificate Authority platform ("Nexus CA"). v1.0 scope locked per BRD.
 
 | Layer | Key files |
 |---|---|
-| Requirements | `Docs/1-Requirements/BRD.md`, `Docs/1-Requirements/branding.md`, `Docs/1-Requirements/ui-screens.md`, `Docs/1-Requirements/checker-review.md`, `Docs/1-Requirements/Workflows/WF-001` … `WF-015` |
+| Requirements | `Docs/1-Requirements/BRD.md`, `Docs/1-Requirements/branding.md`, `Docs/1-Requirements/ui-screens.md`, `Docs/1-Requirements/checker-review.md`, `Docs/1-Requirements/Workflows/WF-001` … `WF-018` |
 | High-Level Design | `Docs/2-Design/2.1-HLD/architecture.md`, `Docs/2-Design/2.1-HLD/sequence-diagrams.md` |
 | Low-Level Design | `Docs/2-Design/2.2-LLD/data-model.md`, `Docs/2-Design/2.2-LLD/crypto-design.md`, `Docs/2-Design/2.2-LLD/certificate-profiles.md`, `Docs/2-Design/2.2-LLD/error-catalog.md`, `Docs/2-Design/2.2-LLD/api/` |
 | ADRs | `Docs/2-Design/ADRs/` |
