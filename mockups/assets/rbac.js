@@ -36,13 +36,17 @@
     { id: 'intermediate-cas', label: 'Intermediate CAs',     icon: '◇', href: 'S-300-intermediate-ca-list.html' },
     { id: 'certificates',     label: 'Certificates',         icon: '▤', href: 'S-400-certificate-list.html' },
     { section: 'Requests' },
+    // Makers track their own submissions ("My Requests"); they have no approval
+    // queue. Checkers/Auditor get the approval queue + full history. The href for
+    // My Requests is role-specific (each maker persona has its own page).
+    { id: 'my-requests',      label: 'My Requests',          icon: '⟲', roles: 'ADMIN_MAKER OPERATOR_MAKER', hrefByRole: { ADMIN_MAKER: 'R-AM-my-requests.html', OPERATOR_MAKER: 'R-OM-my-requests.html' } },
     { id: 'pending',          label: 'Pending Requests',     icon: '◷', href: 'S-500-requests-pending.html', roles: 'ADMIN_CHECKER OPERATOR_CHECKER AUDITOR' },
-    { id: 'history',          label: 'Request History',      icon: '⟲', href: 'S-502-request-history.html' },
+    { id: 'history',          label: 'Request History',      icon: '⟲', href: 'S-502-request-history.html', roles: 'ADMIN_CHECKER OPERATOR_CHECKER AUDITOR' },
     { section: 'Administration' },
     { id: 'users',            label: 'Users',                icon: '◔', href: 'S-600-user-list.html', roles: ADMIN },
     { id: 'roles',            label: 'Roles',                icon: '◎', href: 'S-610-role-list.html', roles: ADMIN },
     { id: 'system-config',    label: 'System Configuration', icon: '⚙', href: 'S-700-system-configuration.html', roles: ADMIN },
-    { section: 'Reports' },
+    { endSection: true }, // close Administration; the trailing items below are loose (no header)
     { id: 'reports',          label: 'Reports',              icon: '▥', href: 'S-800-report-root-cas.html' },
     { id: 'audit',            label: 'Audit Log',            icon: '▣', href: 'S-806-report-audit.html' },
     { id: 'profile',          label: 'Profile',              icon: '◐', href: 'S-102-profile.html' }
@@ -65,16 +69,20 @@
     return '';
   }
 
-  function buildNav() {
+  function buildNav(role) {
     var nav = document.querySelector('.sidebar__nav');
     if (!nav || nav.getAttribute('data-fixed-nav') === 'true') return; // skip persona/custom navs
     var active = activeNavId();
     var html = '';
+    var pendingSection = null; // hold a section header until a visible item follows it
     NAV.forEach(function (n) {
-      if (n.section) { html += '<div class="sidebar__section">' + n.section + '</div>'; return; }
+      if (n.section) { pendingSection = n.section; return; }
+      if (n.endSection) { pendingSection = null; return; } // close a section so trailing items stay loose
+      if (n.roles && !inList(n.roles, role)) return; // not visible for this role
+      if (pendingSection) { html += '<div class="sidebar__section">' + pendingSection + '</div>'; pendingSection = null; }
+      var href = (n.hrefByRole && n.hrefByRole[role]) || n.href;
       var cls = 'nav-item' + (n.id === active ? ' is-active' : '');
-      var roles = n.roles ? ' data-roles="' + n.roles + '"' : '';
-      html += '<a class="' + cls + '" href="' + n.href + '"' + roles + '><span class="ico">' + n.icon + '</span> ' + n.label + '</a>';
+      html += '<a class="' + cls + '" href="' + href + '"><span class="ico">' + n.icon + '</span> ' + n.label + '</a>';
     });
     nav.innerHTML = html;
   }
@@ -96,6 +104,11 @@
   function apply(role) {
     document.body.setAttribute('data-role', role);
     try { sessionStorage.setItem('nexusRole', role); } catch (e) {}
+
+    // Rebuild the sidebar for this role: the Requests section differs (makers see
+    // "My Requests"; checkers/auditor see "Pending Requests" + "Request History")
+    // and empty section headers are dropped. Identical structure on every screen.
+    buildNav(role);
 
     document.querySelectorAll('[data-roles]').forEach(function (el) {
       el.hidden = !inList(el.getAttribute('data-roles'), role);
@@ -131,15 +144,22 @@
   }
 
   function init() {
+    // Resolve the role first; apply() then builds the role-correct sidebar (same
+    // structure on every feature screen) and applies page-level visibility.
     // Resolution order: explicit ?role= → role carried from a persona (sessionStorage)
-    // → page default (body[data-role]) → the screen's hardcoded sidebar badge → ADMIN_MAKER.
+    // → page default (body[data-role]) → a single fixed default.
+    // NB: we deliberately do NOT fall back to the screen's hardcoded sidebar
+    // badge. Those badges differ per screen (reports=AUDITOR, certs=OPERATOR_MAKER,
+    // requests=ADMIN_CHECKER, …), which made the landing role — and therefore the
+    // visible nav items — depend on which screen you entered. Defaulting to one
+    // role keeps navigation identical everywhere; the "View as" switcher (persisted
+    // in sessionStorage) is the single control that changes it.
+    var DEFAULT_ROLE = 'ADMIN_MAKER';
     var stored = null;
     try { stored = sessionStorage.getItem('nexusRole'); } catch (e) {}
     var initial = fromQuery() || stored || document.body.getAttribute('data-role');
     if (!initial || ROLES.indexOf(initial) === -1) {
-      var badge = document.querySelector('.sidebar__user .role-badge');
-      var txt = badge ? badge.textContent.trim() : '';
-      initial = ROLES.indexOf(txt) !== -1 ? txt : 'ADMIN_MAKER';
+      initial = DEFAULT_ROLE;
     }
 
     var box = document.createElement('div');
