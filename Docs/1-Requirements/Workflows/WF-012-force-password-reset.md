@@ -30,7 +30,7 @@ flowchart TD
     G -- No --> G1[Increment failure count] --> G2{Failures ≥ threshold?}
     G2 -- Yes --> G3[Lock account] --> Z
     G2 -- No --> G4[Error] --> E
-    G -- Yes --> H{New password meets complexity?<br/>And ≠ current password?}
+    G -- Yes --> H{New password meets policy?<br/>And not in password history?}
     H -- No --> H1[Inline error] --> E
     H -- Yes --> I[Update password, clear force_password_reset,<br/>increment session_version, issue JWT]
     I --> J[Login proceeds]
@@ -45,8 +45,8 @@ flowchart TD
 | 2 | Server | Check `force_password_reset` and password expiry | If neither, fall through to the standard MFA flow (not this workflow). |
 | 3 | Server | Generate OTC, email it, render the force-reset form | OTC mechanics identical to WF-011. |
 | 4 | User | Submit OTC, new password, confirm password |  |
-| 5 | Server | Validate OTC, complexity, that new ≠ current bcrypt hash (per [BRD — Authentication Requirements](../BRD.md#authentication-requirements) — reuse is only restricted in the *force* flow to prevent re-entering the expired one). | If new password's plaintext bcrypt-matches the stored hash, reject `BUS-0070 cannot reuse current password`. |
-| 6 | Server | Persist new password (bcrypt), clear `force_password_reset`, set `password_changed_at = now()`, clear `temp_password_expires_at`, reset MFA failure count, increment `session_version`. | Single transaction. |
+| 5 | Server | Validate OTC, the policy regex, and that the new password does not bcrypt-match any of the last *N* passwords in `password_history` (N = Password History Depth), per [BRD — Authentication Requirements](../BRD.md#authentication-requirements). | If the new password matches any retained history entry, reject `BUS-0070 cannot reuse a recent password`. |
+| 6 | Server | Persist new password (bcrypt), append the new hash to `password_history` and prune beyond the configured depth, clear `force_password_reset`, set `password_changed_at = now()`, clear `temp_password_expires_at`, reset MFA failure count, increment `session_version`. | Single transaction. |
 | 7 | Server | Issue JWT and complete login. | The MFA performed in this flow satisfies the per-session MFA requirement; no additional OTC is requested. |
 
 ## Validation Rules
@@ -54,8 +54,8 @@ flowchart TD
 | Field | Rule | On violation |
 |---|---|---|
 | OTC | As WF-011 | 401 `AUTH-0020`/`AUTH-0021` |
-| New password | Complexity rules | 400 `VAL-0040` |
-| New password vs current | Must not bcrypt-match current | 409 `BUS-0070` |
+| New password | Matches the configured Password Policy Regex | 400 `VAL-0040` |
+| New password vs history | Must not bcrypt-match any of the last *N* passwords (Password History Depth) | 409 `BUS-0070` |
 
 ## Error Paths
 

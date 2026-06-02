@@ -1,0 +1,1 @@
+- [Project: Nexus CA](project-nexus-ca.md) — Core project context, architecture, compliance posture, doc structure, and recurring BRD gap themes from 2026-06-01 audit

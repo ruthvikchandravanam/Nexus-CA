@@ -2,14 +2,14 @@
 
 ## Summary
 
-ADMIN_MAKER submits a request to flip an Intermediate CA's status between `ACTIVE` and `DISABLED`. ADMIN_CHECKER reviews and approves or rejects. Disabling an Intermediate CA blocks new certificate issuance against it. This workflow does not apply to `REVOKED` Intermediate CAs.
+CA_ADMIN_MAKER submits a request to flip an Intermediate CA's status between `ACTIVE` and `DISABLED`. CA_ADMIN_CHECKER reviews and approves or rejects. Disabling an Intermediate CA blocks new certificate issuance against it. This workflow does not apply to `REVOKED` Intermediate CAs.
 
 ## Actors
 
 | Role | Responsibility |
 |---|---|
-| ADMIN_MAKER | Submits the request |
-| ADMIN_CHECKER | Reviews and decides |
+| CA_ADMIN_MAKER | Submits the request |
+| CA_ADMIN_CHECKER | Reviews and decides |
 
 ## Preconditions
 
@@ -20,12 +20,12 @@ ADMIN_MAKER submits a request to flip an Intermediate CA's status between `ACTIV
 
 ```mermaid
 flowchart TD
-    A[ADMIN_MAKER selects Intermediate CA] --> B{Status ACTIVE or DISABLED?}
+    A[CA_ADMIN_MAKER selects Intermediate CA] --> B{Status ACTIVE or DISABLED?}
     B -- No --> B1[Action not offered] --> Z((End))
     B -- Yes --> C[Choose target status]
     C --> D[Submit]
     D --> E[PENDING_APPROVAL]
-    E --> F[ADMIN_CHECKER review]
+    E --> F[CA_ADMIN_CHECKER review]
     F --> G{Decision}
     G -- Reject --> R[REJECTED] --> Z
     G -- Approve --> H[APPROVED]
@@ -39,11 +39,11 @@ flowchart TD
 
 | # | Actor | Step | Validation |
 |---|---|---|---|
-| 1 | ADMIN_MAKER | Open Intermediate CA detail | Role check. |
-| 2 | ADMIN_MAKER | Choose Enable / Disable | Only the action consistent with current status is offered. Hidden if `REVOKED`. |
-| 3 | ADMIN_MAKER | Submit | Server re-validates current status. |
-| 4 | ADMIN_CHECKER | Review | Diff shows status flip. |
-| 5 | ADMIN_CHECKER | Approve / Reject | Reject requires comment. |
+| 1 | CA_ADMIN_MAKER | Open Intermediate CA detail | Role check. |
+| 2 | CA_ADMIN_MAKER | Choose Enable / Disable | Only the action consistent with current status is offered. Hidden if `REVOKED`. |
+| 3 | CA_ADMIN_MAKER | Submit | Server re-validates current status. |
+| 4 | CA_ADMIN_CHECKER | Review | Diff shows status flip. |
+| 5 | CA_ADMIN_CHECKER | Approve / Reject | Reject requires comment. |
 | 6 | System | Execute | Update status, supersede peer requests, notify maker. |
 
 ## Validation Rules

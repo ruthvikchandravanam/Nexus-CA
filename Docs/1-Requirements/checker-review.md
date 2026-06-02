@@ -50,7 +50,7 @@ For `ROLE_CREATE` and `ROLE_EDIT` requests, each **(feature, operation) permissi
 
 ## Accessibility Requirements
 
-- Diff color is decorative only. Each change row carries an `aria-label` describing the change type — e.g., `aria-label="Modified: role changed from OPERATOR_MAKER to OPERATOR_CHECKER"`.
+- Diff color is decorative only. Each change row carries an `aria-label` describing the change type — e.g., `aria-label="Modified: role changed from CA_OPERATOR_MAKER to CA_OPERATOR_CHECKER"`.
 - Strikethrough is applied via CSS `text-decoration` on the previous-value cell so screen readers announce the value once with the change context from the aria-label.
 - Color contrast for all four change-type pairs meets WCAG 2.1 AA (verified in [branding.md — Accessibility](branding.md#accessibility)).
 

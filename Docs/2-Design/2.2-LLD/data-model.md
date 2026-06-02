@@ -60,17 +60,31 @@ Authentication, authorization, and account state.
 
 Indexes: `(role_id, status)`, `(email)`, `(status)`.
 
+#### `password_history`
+
+Retains a user's recent bcrypt hashes to enforce the configurable **Password History Depth** (BRD — Authentication Requirements). On each password change the new hash is inserted; entries beyond the configured depth (oldest first) are pruned in the same transaction. A reuse check bcrypt-compares the candidate against the retained rows for the user.
+
+| Column | Type | Constraints | Notes |
+|---|---|---|---|
+| `id` | BIGINT UNSIGNED | PK, AUTO_INCREMENT | |
+| `user_id` | BIGINT UNSIGNED | NOT NULL, FK → users.id ON DELETE CASCADE | |
+| `password_hash` | VARCHAR(72) | NOT NULL | bcrypt cost 12. Includes the hash that is currently live in `users.password_hash`. |
+| `created_at` | DATETIME(3) | NOT NULL | Time the password was set; pruning orders by this. |
+
+Indexes: `(user_id, created_at DESC)`. System-generated temporary passwords (WF-005/WF-014) are **not** recorded here — only user-chosen passwords participate in history.
+
 #### `roles`
 
-Role definitions for the configurable RBAC engine. Ships with five **seeded** rows (the original fixed roles); additional **custom** roles are created via maker-checker (WF-016/017/018). Roles are soft-deleted, never purged.
+Role definitions for the configurable RBAC engine. Ships with seven **seeded** rows (`SUPER_ADMIN_MAKER`, `SUPER_ADMIN_CHECKER`, `CA_ADMIN_MAKER`, `CA_ADMIN_CHECKER`, `CA_OPERATOR_MAKER`, `CA_OPERATOR_CHECKER`, `AUDITOR`); additional **custom** roles are created via maker-checker (WF-016/017/018). Roles are soft-deleted, never purged. The two `SUPER_ADMIN` rows are **immutable** (`is_immutable = 1`) and cannot be edited, deleted, or disabled.
 
 | Column | Type | Constraints | Notes |
 |---|---|---|---|
 | `id` | BIGINT UNSIGNED | PK, AUTO_INCREMENT | |
 | `name` | VARCHAR(50) | NOT NULL, UNIQUE | Display name, e.g., `Certificate Operations Maker`. Uniqueness over non-deleted rows enforced at the application layer. |
 | `archetype` | ENUM('MAKER','CHECKER','VIEWER') | NOT NULL | Fixes the operation palette; immutable after creation. Enforces segregation of duties. |
-| `is_system` | TINYINT(1) | NOT NULL, DEFAULT 0 | `1` for the five seeded roles. Editable/deletable like custom roles but flagged for UI and reporting. |
-| `status` | ENUM('ACTIVE','DELETED') | NOT NULL, DEFAULT 'ACTIVE' | Soft delete only; retained for audit and to resolve historical assignments. |
+| `is_system` | TINYINT(1) | NOT NULL, DEFAULT 0 | `1` for the seven seeded roles. Flagged for UI and reporting; CA_ADMIN/CA_OPERATOR/AUDITOR remain editable/deletable like custom roles. |
+| `is_immutable` | TINYINT(1) | NOT NULL, DEFAULT 0 | `1` for the two SUPER_ADMIN seeded rows. Any edit, delete, or disable request targeting an immutable role is rejected at both submission and execution; their permission set is fixed and they are created only at bootstrap. |
+| `status` | ENUM('ACTIVE','DELETED') | NOT NULL, DEFAULT 'ACTIVE' | Soft delete only; retained for audit and to resolve historical assignments. Immutable roles cannot transition to `DELETED`. |
 | `created_request_id` | BIGINT UNSIGNED | NULL, FK → requests.id | NULL for seeded rows. |
 | `created_at` | DATETIME(3) | NOT NULL | |
 | `updated_at` | DATETIME(3) | NOT NULL | Application-maintained. |

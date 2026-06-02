@@ -2,14 +2,14 @@
 
 ## Summary
 
-ADMIN_MAKER submits a request to create a new Intermediate CA under an existing parent CA (Root CA or another Intermediate CA). On approval, the Crypto API generates a keypair and the parent CA signs the new Intermediate CA certificate.
+CA_ADMIN_MAKER submits a request to create a new Intermediate CA under an existing parent CA (Root CA or another Intermediate CA). On approval, the Crypto API generates a keypair and the parent CA signs the new Intermediate CA certificate.
 
 ## Actors
 
 | Role | Responsibility |
 |---|---|
-| ADMIN_MAKER | Submits the request |
-| ADMIN_CHECKER | Reviews and decides |
+| CA_ADMIN_MAKER | Submits the request |
+| CA_ADMIN_CHECKER | Reviews and decides |
 
 ## Preconditions
 
@@ -20,13 +20,13 @@ ADMIN_MAKER submits a request to create a new Intermediate CA under an existing 
 
 ```mermaid
 flowchart TD
-    A[ADMIN_MAKER opens Create Intermediate CA] --> B[Select Parent CA<br/>from ACTIVE CAs only]
+    A[CA_ADMIN_MAKER opens Create Intermediate CA] --> B[Select Parent CA<br/>from ACTIVE CAs only]
     B --> C[Fill creation fields]
     C --> D{Parent depth + 1<br/>≤ Maximum CA Hierarchy Depth?}
     D -- No --> D1[Reject at submission] --> Z((End))
     D -- Yes --> E[Submit]
     E --> F[PENDING_APPROVAL]
-    F --> G[ADMIN_CHECKER review]
+    F --> G[CA_ADMIN_CHECKER review]
     G --> H{Decision}
     H -- Reject --> R[REJECTED] --> Z
     H -- Approve --> I[APPROVED]
@@ -44,12 +44,12 @@ flowchart TD
 
 | # | Actor | Step | Validation |
 |---|---|---|---|
-| 1 | ADMIN_MAKER | Open *Create Intermediate CA* | Role check. |
-| 2 | ADMIN_MAKER | Select Parent CA | Picker filters to `ACTIVE` CAs only and excludes any CA whose `depth + 1` would exceed the configured maximum. |
-| 3 | ADMIN_MAKER | Fill: CN, O, C, Key Algorithm, Key Size, Validity Period (years) | Same field rules as WF-001. Validity Period must not exceed the parent CA's remaining validity. |
-| 4 | ADMIN_MAKER | Submit | Server re-validates parent CA status, hierarchy depth, and field rules. |
-| 5 | ADMIN_CHECKER | Open and review | Snapshot view shows parent CA reference and all new fields. |
-| 6 | ADMIN_CHECKER | Approve / Reject | Reject requires comment. |
+| 1 | CA_ADMIN_MAKER | Open *Create Intermediate CA* | Role check. |
+| 2 | CA_ADMIN_MAKER | Select Parent CA | Picker filters to `ACTIVE` CAs only and excludes any CA whose `depth + 1` would exceed the configured maximum. |
+| 3 | CA_ADMIN_MAKER | Fill: CN, O, C, Key Algorithm, Key Size, Validity Period (years) | Same field rules as WF-001. Validity Period must not exceed the parent CA's remaining validity. |
+| 4 | CA_ADMIN_MAKER | Submit | Server re-validates parent CA status, hierarchy depth, and field rules. |
+| 5 | CA_ADMIN_CHECKER | Open and review | Snapshot view shows parent CA reference and all new fields. |
+| 6 | CA_ADMIN_CHECKER | Approve / Reject | Reject requires comment. |
 | 7 | System | Execute | Re-check at execution time: parent CA still `ACTIVE`, depth still within bounds. |
 | 8 | Crypto API | Generate keypair, request signature from parent CA's private key, encrypt new private key with KEK, persist |  |
 | 9 | System | Persist Intermediate CA metadata (parent_id, depth = parent.depth + 1), public certificate; notify maker; supersede peers |  |

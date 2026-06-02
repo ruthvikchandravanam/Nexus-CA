@@ -86,13 +86,13 @@ Stable application error codes returned by the Business Logic API and Crypto API
 | `BUS-0032` | 409 | Validity exceeds parent CA validity | |
 | `BUS-0040` | 409 | Username already exists | |
 | `BUS-0041` | 409 | Email already exists | |
-| `BUS-0050` | 409 | Must retain at least one ADMIN_MAKER | Seeded-default form of the minimum-viability rule; see `BUS-0104` for the generalised check |
-| `BUS-0051` | 409 | Must retain at least one ADMIN_CHECKER | Seeded-default form; see `BUS-0102` for the generalised check |
+| `BUS-0050` | 409 | Must retain at least one SUPER_ADMIN_MAKER | Seeded-default form of the minimum-viability rule; see `BUS-0104` for the generalised check |
+| `BUS-0051` | 409 | Must retain at least one SUPER_ADMIN_CHECKER | Seeded-default form; see `BUS-0102` for the generalised check |
 | `BUS-0060` | 409 | CSR has already been used | csr_sha256 collision |
 | `BUS-0061` | 409 | Signing chain is not entirely active | |
 | `BUS-0062` | 409 | Validity exceeds signing CA validity | |
 | `BUS-0063` | 409 | Validity exceeds maximum for certificate type | |
-| `BUS-0070` | 409 | New password cannot equal current password | Force-reset reuse |
+| `BUS-0070` | 409 | New password cannot match any of the last N passwords (Password History Depth) | Password history reuse (WF-011, WF-012) |
 | `BUS-0080` | 409 | Bootstrap already completed | `/setup` after first success |
 | `BUS-0090` | 409 | Request has already been decided | Approve/reject after state change |
 | `BUS-0091` | 409 | Request was superseded by another executed request | |

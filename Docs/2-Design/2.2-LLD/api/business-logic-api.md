@@ -46,9 +46,9 @@ This document is the interim endpoint catalog. The authoritative machine-readabl
 | GET | `/root-cas` | All | List all Root CAs (all statuses). |
 | GET | `/root-cas/{id}` | All | Detail. |
 | GET | `/root-cas/{id}/certificate?format=PEM\|DER` | All | Download public certificate. |
-| POST | `/root-cas/requests/create` | ADMIN_MAKER | WF-001 submit. Body: `{ "cn", "o", "c", "key_algorithm", "key_size_bits", "validity_years" }`. |
-| POST | `/root-cas/{id}/requests/enable-disable` | ADMIN_MAKER | WF-002 submit. Body: `{ "target_status": "ACTIVE"\|"DISABLED" }`. |
-| POST | `/root-cas/{id}/requests/revoke` | ADMIN_MAKER | WF-009 submit. Body: `{ "reason": "KEY_COMPROMISE"\|... }`. |
+| POST | `/root-cas/requests/create` | CA_ADMIN_MAKER | WF-001 submit. Body: `{ "cn", "o", "c", "key_algorithm", "key_size_bits", "validity_years" }`. |
+| POST | `/root-cas/{id}/requests/enable-disable` | CA_ADMIN_MAKER | WF-002 submit. Body: `{ "target_status": "ACTIVE"\|"DISABLED" }`. |
+| POST | `/root-cas/{id}/requests/revoke` | CA_ADMIN_MAKER | WF-009 submit. Body: `{ "reason": "KEY_COMPROMISE"\|... }`. |
 
 ### Intermediate CA management
 
@@ -57,10 +57,10 @@ This document is the interim endpoint catalog. The authoritative machine-readabl
 | GET | `/intermediate-cas` | All | List. |
 | GET | `/intermediate-cas/{id}` | All | Detail. |
 | GET | `/intermediate-cas/{id}/certificate?format=PEM\|DER` | All | Download public certificate. |
-| GET | `/intermediate-cas/issuable` | OPERATOR_MAKER | List ACTIVE Intermediate CAs with fully ACTIVE ancestry — input for WF-008. |
-| POST | `/intermediate-cas/requests/create` | ADMIN_MAKER | WF-003 submit. Body: `{ "parent_kind", "parent_id", "cn", "o", "c", "key_algorithm", "key_size_bits", "validity_years" }`. |
-| POST | `/intermediate-cas/{id}/requests/enable-disable` | ADMIN_MAKER | WF-004. |
-| POST | `/intermediate-cas/{id}/requests/revoke` | ADMIN_MAKER | WF-015. |
+| GET | `/intermediate-cas/issuable` | CA_OPERATOR_MAKER | List ACTIVE Intermediate CAs with fully ACTIVE ancestry — input for WF-008. |
+| POST | `/intermediate-cas/requests/create` | CA_ADMIN_MAKER | WF-003 submit. Body: `{ "parent_kind", "parent_id", "cn", "o", "c", "key_algorithm", "key_size_bits", "validity_years" }`. |
+| POST | `/intermediate-cas/{id}/requests/enable-disable` | CA_ADMIN_MAKER | WF-004. |
+| POST | `/intermediate-cas/{id}/requests/revoke` | CA_ADMIN_MAKER | WF-015. |
 
 ### Certificate issuance
 
@@ -68,31 +68,31 @@ This document is the interim endpoint catalog. The authoritative machine-readabl
 |---|---|---|---|
 | GET | `/certificates` | All | List. |
 | GET | `/certificates/{id}` | All | Detail. |
-| GET | `/certificates/{id}/download` | OPERATOR_MAKER, OPERATOR_CHECKER (only those associated with the request) | Returns bytes in the recorded `output_format`. The first OPERATOR_MAKER download triggers COMPLETED. |
-| POST | `/certificates/csr/parse` | OPERATOR_MAKER | Stateless: parse a CSR and return Subject DN, key info, SANs, computed `csr_sha256`. Does **not** persist anything. |
-| POST | `/certificates/requests/issue` | OPERATOR_MAKER | WF-008 submit. Body: `{ "csr_pem", "csr_sha256", "issuing_intermediate_ca_id", "certificate_type", "valid_from", "valid_to", "output_format" }`. |
+| GET | `/certificates/{id}/download` | CA_OPERATOR_MAKER, CA_OPERATOR_CHECKER (only those associated with the request) | Returns bytes in the recorded `output_format`. The first CA_OPERATOR_MAKER download triggers COMPLETED. |
+| POST | `/certificates/csr/parse` | CA_OPERATOR_MAKER | Stateless: parse a CSR and return Subject DN, key info, SANs, computed `csr_sha256`. Does **not** persist anything. |
+| POST | `/certificates/requests/issue` | CA_OPERATOR_MAKER | WF-008 submit. Body: `{ "csr_pem", "csr_sha256", "issuing_intermediate_ca_id", "certificate_type", "valid_from", "valid_to", "output_format" }`. |
 
 ### User management
 
 | Method | Path | Roles | Purpose |
 |---|---|---|---|
-| GET | `/users` | ADMIN_MAKER, ADMIN_CHECKER, AUDITOR | List. |
-| GET | `/users/{id}` | ADMIN_MAKER, ADMIN_CHECKER, AUDITOR; or self | Detail. |
-| POST | `/users/requests/create` | ADMIN_MAKER | WF-005. |
-| POST | `/users/{id}/requests/enable-disable` | ADMIN_MAKER | WF-006. |
-| POST | `/users/{id}/requests/role-assign` | ADMIN_MAKER | WF-007. Body: `{ "new_role_id": <id> }`. |
-| POST | `/users/{id}/password/reset` | ADMIN_MAKER | WF-014. No maker-checker. |
+| GET | `/users` | SUPER_ADMIN_MAKER, SUPER_ADMIN_CHECKER, AUDITOR | List. |
+| GET | `/users/{id}` | SUPER_ADMIN_MAKER, SUPER_ADMIN_CHECKER, AUDITOR; or self | Detail. |
+| POST | `/users/requests/create` | SUPER_ADMIN_MAKER | WF-005. |
+| POST | `/users/{id}/requests/enable-disable` | SUPER_ADMIN_MAKER | WF-006. |
+| POST | `/users/{id}/requests/role-assign` | SUPER_ADMIN_MAKER | WF-007. Body: `{ "new_role_id": <id> }`. |
+| POST | `/users/{id}/password/reset` | SUPER_ADMIN_MAKER | WF-014. No maker-checker. |
 
 ### Role management
 
 | Method | Path | Roles | Purpose |
 |---|---|---|---|
-| GET | `/roles` | ADMIN_MAKER, ADMIN_CHECKER, AUDITOR | List roles (id, name, archetype, is_system, permission count, assigned-user count, status). |
-| GET | `/roles/{id}` | ADMIN_MAKER, ADMIN_CHECKER, AUDITOR | Detail including the full permission set and assigned users. |
-| GET | `/roles/catalogue` | ADMIN_MAKER | The permission catalogue (features × operations valid per archetype) — drives the Create/Edit Role form. |
-| POST | `/roles/requests/create` | ADMIN_MAKER | WF-016 submit. Body: `{ "name", "archetype", "permissions": [ { "feature", "operation" } ] }`. |
-| POST | `/roles/{id}/requests/edit` | ADMIN_MAKER | WF-017 submit. Body: `{ "name"?, "permissions": [...] }` (archetype immutable). |
-| POST | `/roles/{id}/requests/delete` | ADMIN_MAKER | WF-018 submit. Body: `{ "reassign_users_to_role_id"?: <id> }`. |
+| GET | `/roles` | SUPER_ADMIN_MAKER, SUPER_ADMIN_CHECKER, AUDITOR | List roles (id, name, archetype, is_system, permission count, assigned-user count, status). |
+| GET | `/roles/{id}` | SUPER_ADMIN_MAKER, SUPER_ADMIN_CHECKER, AUDITOR | Detail including the full permission set and assigned users. |
+| GET | `/roles/catalogue` | SUPER_ADMIN_MAKER | The permission catalogue (features × operations valid per archetype) — drives the Create/Edit Role form. |
+| POST | `/roles/requests/create` | SUPER_ADMIN_MAKER | WF-016 submit. Body: `{ "name", "archetype", "permissions": [ { "feature", "operation" } ] }`. |
+| POST | `/roles/{id}/requests/edit` | SUPER_ADMIN_MAKER | WF-017 submit. Body: `{ "name"?, "permissions": [...] }` (archetype immutable). |
+| POST | `/roles/{id}/requests/delete` | SUPER_ADMIN_MAKER | WF-018 submit. Body: `{ "reassign_users_to_role_id"?: <id> }`. |
 
 > Roles shown in the **Roles** column of this catalogue are the seeded defaults. Authorisation is enforced by the caller's **permissions** (feature + operation), not a hard-coded role name — see [BRD §Role Management](../../1-Requirements/BRD.md#role-management-configurable-rbac). A request for feature *F* routes to any active Checker-archetype role holding Approve on *F*.
 
@@ -110,8 +110,8 @@ This document is the interim endpoint catalog. The authoritative machine-readabl
 
 | Method | Path | Roles | Purpose |
 |---|---|---|---|
-| GET | `/system-configuration` | ADMIN_MAKER, ADMIN_CHECKER, AUDITOR | Full configuration. |
-| POST | `/system-configuration/requests/update` | ADMIN_MAKER | WF-013. Body: `{ "changes": { "<PARAM_NAME>": <new_value> } }`. |
+| GET | `/system-configuration` | SUPER_ADMIN_MAKER, SUPER_ADMIN_CHECKER, AUDITOR | Full configuration. |
+| POST | `/system-configuration/requests/update` | SUPER_ADMIN_MAKER | WF-013. Body: `{ "changes": { "<PARAM_NAME>": <new_value> } }`. |
 
 ### Reports
 
@@ -121,7 +121,7 @@ This document is the interim endpoint catalog. The authoritative machine-readabl
 | GET | `/reports/intermediate-cas` | All | |
 | GET | `/reports/certificates` | All | |
 | GET | `/reports/users` | All (excl. password fields) | |
-| GET | `/reports/roles` | ADMIN_MAKER, ADMIN_CHECKER, AUDITOR | Per BRD Role Report. |
+| GET | `/reports/roles` | SUPER_ADMIN_MAKER, SUPER_ADMIN_CHECKER, AUDITOR | Per BRD Role Report. |
 | GET | `/reports/pending-approval` | Per BRD visibility | |
 | GET | `/reports/request-history` | Per BRD visibility | |
 | GET | `/reports/audit` | All | Audit log report. |

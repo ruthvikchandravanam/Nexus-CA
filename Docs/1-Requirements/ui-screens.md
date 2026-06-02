@@ -74,7 +74,7 @@ Convention: A screen marked **role-visible** means a user in that role can reach
 |---|---|
 | Always visible | Logo, current user (name + role badge), Sign out |
 | Items (per role visibility) | Dashboard, Root CAs, Intermediate CAs, Certificates, Users, Roles, Requests (Pending + History), Reports, System Configuration, Audit Log, Profile |
-| Items hidden | Users and Roles hidden for OPERATOR_*; System Configuration hidden for OPERATOR_*, AUDITOR (view-only); Pending Requests hidden for AUDITOR. Navigation items are derived from the signed-in role's permissions per [§Role Management](BRD.md#role-management-configurable-rbac), not a fixed list. |
+| Items hidden | Users and Roles visible only to SUPER_ADMIN_* and AUDITOR (hidden for CA_ADMIN_* and CA_OPERATOR_*); System Configuration hidden for CA_ADMIN_* and CA_OPERATOR_*, and view-only for AUDITOR; Pending Requests hidden for AUDITOR. Navigation items are derived from the signed-in role's permissions per [§Role Management](BRD.md#role-management-configurable-rbac), not a fixed list. |
 
 ### S-102 Profile
 
@@ -93,19 +93,19 @@ Convention: A screen marked **role-visible** means a user in that role can reach
 
 | URL | Role-visible | Data | Actions |
 |---|---|---|---|
-| `/root-cas` | All | List: ID, CN, O, C, Algo/Size, Valid From/To, Status (badge), Created Date | Row click → S-201; **Create Root CA** button (ADMIN_MAKER only) → S-202 |
+| `/root-cas` | All | List: ID, CN, O, C, Algo/Size, Valid From/To, Status (badge), Created Date | Row click → S-201; **Create Root CA** button (CA_ADMIN_MAKER only) → S-202 |
 
 ### S-201 Root CA detail
 
 | URL | Role-visible | Data | Actions per role |
 |---|---|---|---|
-| `/root-cas/{id}` | All | Full metadata, descendant Intermediate CA list, public certificate (download), revocation metadata (if any) | All roles: Download Public Certificate (PEM/DER). ADMIN_MAKER: Enable / Disable (toggle), Revoke (danger). Reject if not in valid status (e.g., REVOKED hides both Enable/Disable and Revoke). |
+| `/root-cas/{id}` | All | Full metadata, descendant Intermediate CA list, public certificate (download), revocation metadata (if any) | All roles: Download Public Certificate (PEM/DER). CA_ADMIN_MAKER: Enable / Disable (toggle), Revoke (danger). Reject if not in valid status (e.g., REVOKED hides both Enable/Disable and Revoke). |
 
 ### S-202 Create Root CA form
 
 | URL | Role-visible | Data | Actions |
 |---|---|---|---|
-| `/root-cas/new` | ADMIN_MAKER | Form fields per WF-001 | Submit → creates request, navigates to S-401 |
+| `/root-cas/new` | CA_ADMIN_MAKER | Form fields per WF-001 | Submit → creates request, navigates to S-401 |
 
 ### S-203 Revoke Root CA modal (within S-201)
 
@@ -120,7 +120,7 @@ Convention: A screen marked **role-visible** means a user in that role can reach
 
 | URL | Role-visible | Data | Actions |
 |---|---|---|---|
-| `/intermediate-cas` | All | List incl. Parent CA name, Depth, Status | Row → S-301; ADMIN_MAKER: Create Intermediate CA → S-302 |
+| `/intermediate-cas` | All | List incl. Parent CA name, Depth, Status | Row → S-301; CA_ADMIN_MAKER: Create Intermediate CA → S-302 |
 
 ### S-301 Intermediate CA detail
 
@@ -128,7 +128,7 @@ Same shape as S-201 with the parent CA reference shown in metadata.
 
 ### S-302 Create Intermediate CA form
 
-| Role-visible | ADMIN_MAKER |
+| Role-visible | CA_ADMIN_MAKER |
 | Data | Parent CA picker (filtered to ACTIVE; excludes any whose depth+1 > max), CN, O, C, Algo, Size, Validity Years |
 | Actions | Submit |
 
@@ -144,19 +144,19 @@ Same shape as S-203.
 
 | URL | Role-visible | Data | Actions |
 |---|---|---|---|
-| `/certificates` | All | List: ID, Type, Subject CN, Serial, Issuing CA, Validity, Status, Submitted By, Created Date | Row → S-401; OPERATOR_MAKER: Submit CSR → S-402 |
+| `/certificates` | All | List: ID, Type, Subject CN, Serial, Issuing CA, Validity, Status, Submitted By, Created Date | Row → S-401; CA_OPERATOR_MAKER: Submit CSR → S-402 |
 
 ### S-401 Certificate detail
 
 | URL | Role-visible | Data | Actions per role |
 |---|---|---|---|
-| `/certificates/{id}` | All | CSR Subject, key info, SANs, issuing CA, validity, output format, status, full audit timeline of the issuance request | OPERATOR_MAKER and OPERATOR_CHECKER who are bound to the request: Download (in recorded format). Download triggers `COMPLETED` only for the OPERATOR_MAKER's first download. |
+| `/certificates/{id}` | All | CSR Subject, key info, SANs, issuing CA, validity, output format, status, full audit timeline of the issuance request | CA_OPERATOR_MAKER and CA_OPERATOR_CHECKER who are bound to the request: Download (in recorded format). Download triggers `COMPLETED` only for the CA_OPERATOR_MAKER's first download. |
 
 ### S-402 Submit CSR
 
 | URL | Role-visible | Data | Actions |
 |---|---|---|---|
-| `/certificates/new` | OPERATOR_MAKER | Three-step form: (1) Paste/upload CSR + Parse preview, (2) Select Intermediate CA + Type + Validity, (3) Select Output Format + Review | Submit → creates request, navigates to S-501 |
+| `/certificates/new` | CA_OPERATOR_MAKER | Three-step form: (1) Paste/upload CSR + Parse preview, (2) Select Intermediate CA + Type + Validity, (3) Select Output Format + Review | Submit → creates request, navigates to S-501 |
 
 The CSR preview (step 1) shows Subject DN, key algorithm and size, SAN entries. If parsing fails, inline error.
 
@@ -190,17 +190,17 @@ The CSR preview (step 1) shows Subject DN, key algorithm and size, SAN entries. 
 
 | URL | Role-visible | Data | Actions |
 |---|---|---|---|
-| `/users` | ADMIN_MAKER, ADMIN_CHECKER, AUDITOR | List: User ID, Full Name, Username, Email, Role, Status, Last Login | Row → S-601; ADMIN_MAKER: Create User → S-602 |
+| `/users` | SUPER_ADMIN_MAKER, SUPER_ADMIN_CHECKER, AUDITOR | List: User ID, Full Name, Username, Email, Role, Status, Last Login | Row → S-601; SUPER_ADMIN_MAKER: Create User → S-602 |
 
 ### S-601 User detail
 
 | URL | Role-visible | Data | Actions per role |
 |---|---|---|---|
-| `/users/{id}` | ADMIN_MAKER, ADMIN_CHECKER, AUDITOR; or self | Full profile, password expiry, last login, request history initiated by this user | ADMIN_MAKER: Enable/Disable, Reassign Role, Reset Password. None for self (use S-102 instead). |
+| `/users/{id}` | SUPER_ADMIN_MAKER, SUPER_ADMIN_CHECKER, AUDITOR; or self | Full profile, password expiry, last login, request history initiated by this user | SUPER_ADMIN_MAKER: Enable/Disable, Reassign Role, Reset Password. None for self (use S-102 instead). |
 
 ### S-602 Create User
 
-| Role-visible | ADMIN_MAKER |
+| Role-visible | SUPER_ADMIN_MAKER |
 | Data | Full Name, Username, Email, Role |
 | Actions | Submit → creates request |
 
@@ -213,25 +213,25 @@ The CSR preview (step 1) shows Subject DN, key algorithm and size, SAN entries. 
 
 ## 6.1 Role management
 
-Surfaces for the configurable RBAC engine (BRD [§Role Management](BRD.md#role-management-configurable-rbac)). The five seeded roles and any custom roles are managed here.
+Surfaces for the configurable RBAC engine (BRD [§Role Management](BRD.md#role-management-configurable-rbac)). The seven seeded roles and any custom roles are managed here.
 
 ### S-610 Role list
 
 | URL | Role-visible | Data | Actions |
 |---|---|---|---|
-| `/roles` | ADMIN_MAKER, ADMIN_CHECKER, AUDITOR | List: ID, Name, Archetype (Maker/Checker/Viewer), Type (System/Custom), Permissions count, Assigned users, Status | Row → S-611; **Create Role** button (ADMIN_MAKER only) → S-612 |
+| `/roles` | SUPER_ADMIN_MAKER, SUPER_ADMIN_CHECKER, AUDITOR | List: ID, Name, Archetype (Maker/Checker/Viewer), Type (System/Custom), Permissions count, Assigned users, Status | Row → S-611; **Create Role** button (SUPER_ADMIN_MAKER only) → S-612 |
 
 ### S-611 Role detail
 
 | URL | Role-visible | Data | Actions per role |
 |---|---|---|---|
-| `/roles/{id}` | ADMIN_MAKER, ADMIN_CHECKER, AUDITOR | Name, archetype, system/custom flag, full permission grid (feature × operation), list of assigned users, created/approved metadata | ADMIN_MAKER: Edit → S-612, Delete → S-613. Archetype shown read-only. |
+| `/roles/{id}` | SUPER_ADMIN_MAKER, SUPER_ADMIN_CHECKER, AUDITOR | Name, archetype, system/custom flag, full permission grid (feature × operation), list of assigned users, created/approved metadata | SUPER_ADMIN_MAKER: Edit → S-612, Delete → S-613. Archetype shown read-only. |
 
 ### S-612 Create / Edit Role form
 
 | URL | Role-visible | Data | Actions |
 |---|---|---|---|
-| `/roles/new`, `/roles/{id}/edit` | ADMIN_MAKER | Step 1 — Name + **Archetype** (Maker / Checker / Viewer). Step 2 — permission grid scoped to the chosen archetype and to each feature's supported operations; **Edit/Delete columns appear only for User, Role, System Configuration**. | Submit → creates a `ROLE_CREATE` / `ROLE_EDIT` request, navigates to S-501 |
+| `/roles/new`, `/roles/{id}/edit` | SUPER_ADMIN_MAKER | Step 1 — Name + **Archetype** (Maker / Checker / Viewer). Step 2 — permission grid scoped to the chosen archetype and to each feature's supported operations; **Edit/Delete columns appear only for User, Role, System Configuration**. | Submit → creates a `ROLE_CREATE` / `ROLE_EDIT` request, navigates to S-501 |
 
 The archetype is chosen at creation and is **read-only when editing** (changing maker↔checker would break segregation of duties — clone instead). The grid hides operations not valid for the archetype (Checker → View/Approve only; Viewer → View only).
 
@@ -248,7 +248,7 @@ The archetype is chosen at creation and is **read-only when editing** (changing 
 
 | URL | Role-visible | Data | Actions per role |
 |---|---|---|---|
-| `/system-configuration` | ADMIN_MAKER (edit), ADMIN_CHECKER, AUDITOR (read-only) | Each parameter with current value, default value, description per BRD | ADMIN_MAKER: edit any value, Submit creates a single change request encompassing all edits |
+| `/system-configuration` | SUPER_ADMIN_MAKER (edit), SUPER_ADMIN_CHECKER, AUDITOR (read-only) | Each parameter with current value, default value, description per BRD | SUPER_ADMIN_MAKER: edit any value, Submit creates a single change request encompassing all edits |
 
 ---
 
@@ -261,8 +261,8 @@ Each of the 7 reports per BRD gets its own screen. URL pattern: `/reports/<name>
 | S-800 | `/reports/root-cas` | All | BRD Root CA Report |
 | S-801 | `/reports/intermediate-cas` | All | BRD Intermediate CA Report |
 | S-802 | `/reports/certificates` | All | BRD Certificate Report |
-| S-803 | `/reports/users` | ADMIN_MAKER, ADMIN_CHECKER, AUDITOR | BRD User Report |
-| S-807 | `/reports/roles` | ADMIN_MAKER, ADMIN_CHECKER, AUDITOR | BRD Role Report |
+| S-803 | `/reports/users` | SUPER_ADMIN_MAKER, SUPER_ADMIN_CHECKER, AUDITOR | BRD User Report |
+| S-807 | `/reports/roles` | SUPER_ADMIN_MAKER, SUPER_ADMIN_CHECKER, AUDITOR | BRD Role Report |
 | S-804 | `/reports/pending-approval` | All (per BRD visibility) | BRD Pending Approval Report |
 | S-805 | `/reports/request-history` | All (per BRD visibility) | BRD Request History Report |
 | S-806 | `/reports/audit` | All | BRD Audit Report |
@@ -282,22 +282,22 @@ Each of the 7 reports per BRD gets its own screen. URL pattern: `/reports/<name>
 
 ## 10. Visibility per role (summary matrix)
 
-| Screen | ADMIN_MAKER | ADMIN_CHECKER | OPERATOR_MAKER | OPERATOR_CHECKER | AUDITOR |
-|---|:---:|:---:|:---:|:---:|:---:|
-| S-200 Root CAs | ✓ | ✓ | ✓ | ✓ | ✓ |
-| S-202 Create Root CA | ✓ | — | — | — | — |
-| S-300 Intermediate CAs | ✓ | ✓ | ✓ | ✓ | ✓ |
-| S-302 Create Intermediate CA | ✓ | — | — | — | — |
-| S-400 Certificates | ✓ | ✓ | ✓ | ✓ | ✓ |
-| S-402 Submit CSR | — | — | ✓ | — | — |
-| S-500 Pending Requests | — | ✓ (admin) | — | ✓ (op) | ✓ (read-only) |
-| S-501 Request review | — | ✓ (admin requests) | — | ✓ (cert requests) | ✓ (read-only) |
-| S-600 Users | ✓ | ✓ | — | — | ✓ |
-| S-602 Create User | ✓ | — | — | — | — |
-| S-610 Roles | ✓ | ✓ | — | — | ✓ |
-| S-612 Create / Edit Role | ✓ | — | — | — | — |
-| S-700 System Configuration | ✓ (edit) | ✓ (view) | — | — | ✓ (view) |
-| S-800..S-806 Reports | ✓ | ✓ | ✓ (relevant) | ✓ (relevant) | ✓ |
+| Screen | SUPER_ADMIN_MAKER | SUPER_ADMIN_CHECKER | CA_ADMIN_MAKER | CA_ADMIN_CHECKER | CA_OPERATOR_MAKER | CA_OPERATOR_CHECKER | AUDITOR |
+|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| S-200 Root CAs | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| S-202 Create Root CA | — | — | ✓ | — | — | — | — |
+| S-300 Intermediate CAs | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| S-302 Create Intermediate CA | — | — | ✓ | — | — | — | — |
+| S-400 Certificates | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| S-402 Submit CSR | — | — | — | — | ✓ | — | — |
+| S-500 Pending Requests | — | ✓ (governance) | — | ✓ (CA) | — | ✓ (cert) | ✓ (read-only) |
+| S-501 Request review | — | ✓ (governance requests) | — | ✓ (CA requests) | — | ✓ (cert requests) | ✓ (read-only) |
+| S-600 Users | ✓ | ✓ | — | — | — | — | ✓ |
+| S-602 Create User | ✓ | — | — | — | — | — | — |
+| S-610 Roles | ✓ | ✓ | — | — | — | — | ✓ |
+| S-612 Create / Edit Role | ✓ | — | — | — | — | — | — |
+| S-700 System Configuration | ✓ (edit) | ✓ (view) | — | — | — | — | ✓ (view) |
+| S-800..S-806 Reports | ✓ | ✓ | ✓ | ✓ | ✓ (relevant) | ✓ (relevant) | ✓ |
 
 ---
 

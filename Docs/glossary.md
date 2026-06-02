@@ -7,17 +7,18 @@ Definitions for project-specific and PKI terms used across Nexus CA documentatio
 | Term | Definition |
 |---|---|
 | **Nexus CA** | The name of the platform. |
-| **Maker** | A user whose role has the **Maker** archetype — it initiates requests that require approval. The seeded maker roles are `ADMIN_MAKER` and `OPERATOR_MAKER`; custom maker roles may also be created (see [BRD §Role Management](1-Requirements/BRD.md#role-management-configurable-rbac)). |
-| **Checker** | A user whose role has the **Checker** archetype — it reviews and approves or rejects maker requests. The seeded checker roles are `ADMIN_CHECKER` and `OPERATOR_CHECKER`; custom checker roles may also exist. |
+| **Maker** | A user whose role has the **Maker** archetype — it initiates requests that require approval. The seeded maker roles are `SUPER_ADMIN_MAKER`, `CA_ADMIN_MAKER`, and `CA_OPERATOR_MAKER`; custom maker roles may also be created (see [BRD §Role Management](1-Requirements/BRD.md#role-management-configurable-rbac)). |
+| **Checker** | A user whose role has the **Checker** archetype — it reviews and approves or rejects maker requests. The seeded checker roles are `SUPER_ADMIN_CHECKER`, `CA_ADMIN_CHECKER`, and `CA_OPERATOR_CHECKER`; custom checker roles may also exist. |
 | **Archetype** | The fixed category of a role — **Maker**, **Checker**, or **Viewer** — chosen at creation and immutable thereafter. It determines the operation palette a role may be granted and structurally enforces segregation of duties. |
-| **Seeded role** | One of the five roles shipped with the platform (`ADMIN_MAKER`, `ADMIN_CHECKER`, `OPERATOR_MAKER`, `OPERATOR_CHECKER`, `AUDITOR`). They are ordinary roles, editable and deletable like custom roles, but flagged `is_system`. |
+| **Seeded role** | One of the seven roles shipped with the platform (`SUPER_ADMIN_MAKER`, `SUPER_ADMIN_CHECKER`, `CA_ADMIN_MAKER`, `CA_ADMIN_CHECKER`, `CA_OPERATOR_MAKER`, `CA_OPERATOR_CHECKER`, `AUDITOR`). All are flagged `is_system`. The `CA_ADMIN`, `CA_OPERATOR`, and `AUDITOR` roles are ordinary roles, editable and deletable like custom roles; the two `SUPER_ADMIN` roles are **immutable** (flagged `is_immutable`) and cannot be edited, deleted, or disabled. |
+| **SUPER_ADMIN** | The governance-plane seeded roles (`SUPER_ADMIN_MAKER` / `SUPER_ADMIN_CHECKER`) that own User, Role, and System Configuration management. They are immutable and exist only via bootstrap, forming the platform's permanent recovery root for administration (see [BRD §SUPER_ADMIN Immutability](1-Requirements/BRD.md#super_admin-immutability)). |
 | **Custom role** | A role created post-deployment via maker-checker (WF-016), assembled from the permission catalogue. |
 | **Permission catalogue** | The fixed set of (feature, operation) pairs a role may be granted. It is the upper bound on authority — no permission exists outside it. |
 | **Soft delete** | Marking a record `DELETED` and retaining it (with history) rather than physically removing it. Applies to Users and Roles; cryptographic entities are never deleted. |
 | **Maker-Checker workflow** | The dual-control pattern in which one user submits an action and a different user approves it before execution. Implemented for all administrative and operational request types in Nexus CA. |
 | **Self-approval** | The prohibited situation in which the same user is both the maker and the checker of a request. Prevented by both UI and server enforcement. |
 | **Superseded request** | A `PENDING_APPROVAL` request that targets the same entity as another request which has now been `EXECUTED`. Per BRD, all such pending peers are auto-rejected with reason *"superseded by executed request."* |
-| **Bootstrap** | The one-time procedure that creates the initial ADMIN_MAKER and ADMIN_CHECKER user accounts, bypassing maker-checker. The `/setup` endpoint is permanently disabled after first use. |
+| **Bootstrap** | The one-time procedure that creates the initial SUPER_ADMIN_MAKER and SUPER_ADMIN_CHECKER user accounts, bypassing maker-checker. It is the sole way the immutable SUPER_ADMIN roles come into existence. The `/setup` endpoint is permanently disabled after first use. |
 | **Audit record** | An immutable, append-only log entry that captures who did what, when, against which entity, with full payload and before/after snapshot. Stored in `audit_events` + `audit_field_changes`. |
 | **Cascade revocation** | When a CA is revoked, all of its descendant Intermediate CAs are automatically and atomically revoked in the same transaction. |
 | **VLAN 2 / 3 / 4** | The three internal network segments. VLAN 2 hosts the Web Tier, VLAN 3 the Business Logic API + Business DB, VLAN 4 the Crypto API + Crypto DB. See [architecture.md — VLANs](2-Design/2.1-HLD/architecture.md#vlans). |
@@ -32,7 +33,7 @@ Definitions for project-specific and PKI terms used across Nexus CA documentatio
 | `APPROVED` | Checker has approved the request. Transient state pending execution. |
 | `REJECTED` | Checker has rejected the request with a mandatory comment. Terminal. |
 | `EXECUTED` | The system has applied the change implied by the approved request. For most request types, immediately transitions to `COMPLETED`. |
-| `COMPLETED` | Terminal success state. For most request types this is automatic on `EXECUTED`; for certificate issuance it is triggered by the OPERATOR_MAKER downloading the certificate. |
+| `COMPLETED` | Terminal success state. For most request types this is automatic on `EXECUTED`; for certificate issuance it is triggered by the CA_OPERATOR_MAKER downloading the certificate. |
 
 ## PKI terms
 
@@ -85,14 +86,16 @@ Definitions for project-specific and PKI terms used across Nexus CA documentatio
 
 ## Roles (seeded defaults)
 
-These five are the **seeded** roles; they are the default configuration of the RBAC engine and may be edited or deleted like any custom role (see [BRD §Role Management](1-Requirements/BRD.md#role-management-configurable-rbac)). Their archetypes are: ADMIN_MAKER, OPERATOR_MAKER → **Maker**; ADMIN_CHECKER, OPERATOR_CHECKER → **Checker**; AUDITOR → **Viewer**.
+These seven are the **seeded** roles; they are the default configuration of the RBAC engine. The CA_ADMIN, CA_OPERATOR, and AUDITOR roles may be edited or deleted like any custom role (see [BRD §Role Management](1-Requirements/BRD.md#role-management-configurable-rbac)); the two SUPER_ADMIN roles are **immutable**. Their archetypes are: SUPER_ADMIN_MAKER, CA_ADMIN_MAKER, CA_OPERATOR_MAKER → **Maker**; SUPER_ADMIN_CHECKER, CA_ADMIN_CHECKER, CA_OPERATOR_CHECKER → **Checker**; AUDITOR → **Viewer**.
 
 | Role | Archetype | Scope (default) |
 |---|---|---|
-| `ADMIN_MAKER` | Maker | Submits administrative requests: CA management, user management, role management, system configuration, CA revocation. |
-| `ADMIN_CHECKER` | Checker | Reviews and decides on administrative requests. |
-| `OPERATOR_MAKER` | Maker | Submits certificate issuance requests. |
-| `OPERATOR_CHECKER` | Checker | Reviews and decides on certificate issuance requests. |
+| `SUPER_ADMIN_MAKER` | Maker | Submits governance requests: user management, role management, system configuration. Immutable; bootstrap-only. |
+| `SUPER_ADMIN_CHECKER` | Checker | Reviews and decides on governance requests. Immutable; bootstrap-only. |
+| `CA_ADMIN_MAKER` | Maker | Submits CA requests: Root/Intermediate CA creation, enable/disable, revocation. |
+| `CA_ADMIN_CHECKER` | Checker | Reviews and decides on CA requests. |
+| `CA_OPERATOR_MAKER` | Maker | Submits certificate issuance requests. |
+| `CA_OPERATOR_CHECKER` | Checker | Reviews and decides on certificate issuance requests. |
 | `AUDITOR` | Viewer | Read-only across all data and requests. |
 
 ## See also

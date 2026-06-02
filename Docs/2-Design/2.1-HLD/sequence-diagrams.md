@@ -77,10 +77,10 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     autonumber
-    participant U as ADMIN_MAKER
+    participant U as CA_ADMIN_MAKER
     participant BL
     participant BDB
-    participant CH as ADMIN_CHECKER
+    participant CH as CA_ADMIN_CHECKER
     participant CA
     participant CDB
 
@@ -88,7 +88,7 @@ sequenceDiagram
     BL->>BL: validate fields per WF-001
     BL->>BDB: INSERT requests (type=ROOT_CA_CREATE, status=PENDING_APPROVAL, payload)
     BL->>BDB: INSERT audit_events (REQUEST_SUBMITTED)
-    BL->>BDB: INSERT notification_outbox (template=PENDING_APPROVAL → all ADMIN_CHECKERs)
+    BL->>BDB: INSERT notification_outbox (template=PENDING_APPROVAL → all CA_ADMIN_CHECKERs)
     BL-->>U: 201 {request_id}
 
     note over CH: later, checker logs in and opens pending queue
@@ -137,10 +137,10 @@ Notes:
 ```mermaid
 sequenceDiagram
     autonumber
-    participant U as OPERATOR_MAKER
+    participant U as CA_OPERATOR_MAKER
     participant BL
     participant BDB
-    participant CH as OPERATOR_CHECKER
+    participant CH as CA_OPERATOR_CHECKER
     participant CA
     participant CDB
 
@@ -157,7 +157,7 @@ sequenceDiagram
     BL->>BL: validate dates, type, chain still ACTIVE
     BL->>BDB: INSERT requests (type=CERTIFICATE_ISSUE, payload)
     BL->>BDB: INSERT audit_events (REQUEST_SUBMITTED)
-    BL->>BDB: INSERT notification_outbox (→ OPERATOR_CHECKERs)
+    BL->>BDB: INSERT notification_outbox (→ CA_OPERATOR_CHECKERs)
     BL-->>U: 201 {request_id}
 
     note over CH: later
@@ -187,7 +187,7 @@ sequenceDiagram
     BL->>BDB: COMMIT
     BL-->>CH: 200
 
-    note over U: later, OPERATOR_MAKER downloads
+    note over U: later, CA_OPERATOR_MAKER downloads
 
     U->>BL: GET /certificates/{id}/download
     BL->>BDB: SELECT certificate, verify caller is maker/checker for this cert
@@ -210,11 +210,11 @@ Illustrates how the *superseded by executed request* rule is applied at executio
 ```mermaid
 sequenceDiagram
     autonumber
-    participant M1 as ADMIN_MAKER A
-    participant M2 as ADMIN_MAKER B
+    participant M1 as CA_ADMIN_MAKER A
+    participant M2 as CA_ADMIN_MAKER B
     participant BL
     participant BDB
-    participant C as ADMIN_CHECKER
+    participant C as CA_ADMIN_CHECKER
 
     M1->>BL: submit Disable Root CA #1
     BL->>BDB: INSERT requests R1 (target=RootCA#1, status=PENDING_APPROVAL)
@@ -242,10 +242,10 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     autonumber
-    participant M as ADMIN_MAKER
+    participant M as CA_ADMIN_MAKER
     participant BL
     participant BDB
-    participant C as ADMIN_CHECKER
+    participant C as CA_ADMIN_CHECKER
 
     M->>BL: submit Revoke Root CA #1 (reason)
     BL->>BDB: INSERT requests (type=ROOT_CA_REVOKE)

@@ -46,7 +46,7 @@ Nexus CA lets an organisation run its own private PKI end to end:
 - **Root CA management** — create, enable/disable, and revoke self-signed Root CAs (multiple may exist independently).
 - **Intermediate CA management** — create multi-level signing hierarchies, enable/disable, and revoke; revocation cascades to all descendants.
 - **Certificate issuance** — submit a CSR, issue CLIENT / SERVER / SIGNING certificates against an active Intermediate CA, and download in PEM, DER, or PKCS#7 formats.
-- **User & role management** — configurable RBAC engine with five seeded roles plus custom roles, each built from a fixed permission catalogue.
+- **User & role management** — configurable RBAC engine with seven seeded roles plus custom roles, each built from a fixed permission catalogue.
 - **Dual control** — every administrative and operational change runs through a maker-checker approval workflow with segregation of duties.
 - **Audit & compliance** — immutable, append-only audit records with full request/approval payloads and before/after snapshots; flat reports across every entity.
 - **Security** — mandatory email-based MFA, account lockout, password expiry, single active session, and email notifications for the full request lifecycle.
@@ -139,21 +139,23 @@ Full details, versions, and rationale: [tools.md](Docs/3-Implementation/tools.md
 
 ## Roles & access control
 
-Nexus CA ships **five seeded roles** and supports an unlimited number of **custom roles**, all built on the same configurable RBAC engine. Every role has exactly one immutable **archetype** that fixes which operations it may be granted and structurally enforces segregation of duties.
+Nexus CA ships **seven seeded roles** and supports an unlimited number of **custom roles**, all built on the same configurable RBAC engine. Every role has exactly one immutable **archetype** that fixes which operations it may be granted and structurally enforces segregation of duties. Administration is split across two planes: the **SUPER_ADMIN** roles own governance (user, role, and system-configuration management), while the **CA_ADMIN** and **CA_OPERATOR** roles own CA operations and certificate issuance respectively.
 
 | Seeded role | Archetype | Default scope |
 |---|---|---|
-| `ADMIN_MAKER` | Maker | Submits CA, user, role, system-config, and CA-revocation requests |
-| `ADMIN_CHECKER` | Checker | Reviews and decides administrative requests |
-| `OPERATOR_MAKER` | Maker | Submits certificate issuance requests |
-| `OPERATOR_CHECKER` | Checker | Reviews and decides certificate issuance requests |
+| `SUPER_ADMIN_MAKER` | Maker | Submits user, role, and system-config requests. Immutable; bootstrap-only |
+| `SUPER_ADMIN_CHECKER` | Checker | Reviews and decides governance requests. Immutable; bootstrap-only |
+| `CA_ADMIN_MAKER` | Maker | Submits Root/Intermediate CA creation, enable/disable, and revocation requests |
+| `CA_ADMIN_CHECKER` | Checker | Reviews and decides CA requests |
+| `CA_OPERATOR_MAKER` | Maker | Submits certificate issuance requests |
+| `CA_OPERATOR_CHECKER` | Checker | Reviews and decides certificate issuance requests |
 | `AUDITOR` | Viewer | Read-only access across all data and requests |
 
 - **Maker** — initiates requests (Create, Edit, Delete, Submit, Revoke, …).
 - **Checker** — reviews and Approves / Rejects maker requests; never an initiator of the same feature.
 - **Viewer** — read-only, for audit and compliance.
 
-A role's permissions are a set of `(feature, operation)` pairs drawn from a fixed catalogue. Edit and Delete are offered only for User, Role, and System Configuration — cryptographic entities (Root CA, Intermediate CA, issued certificates) are never editable or deletable; their only lifecycle operations are Enable/Disable and Revoke. Delete is always a **soft delete** (records are retained with full history). Seeded roles are ordinary roles and may themselves be edited or deleted, subject to minimum-viability safeguards that prevent administrative self-lockout.
+A role's permissions are a set of `(feature, operation)` pairs drawn from a fixed catalogue. Edit and Delete are offered only for User, Role, and System Configuration — cryptographic entities (Root CA, Intermediate CA, issued certificates) are never editable or deletable; their only lifecycle operations are Enable/Disable and Revoke. Delete is always a **soft delete** (records are retained with full history). The CA_ADMIN, CA_OPERATOR, and AUDITOR seeded roles are ordinary roles and may themselves be edited or deleted, subject to minimum-viability safeguards that prevent administrative self-lockout; the two **SUPER_ADMIN roles are immutable** (they cannot be edited, deleted, or disabled) and are created only at bootstrap, forming the platform's permanent recovery root.
 
 See [BRD §Role Management](Docs/1-Requirements/BRD.md#role-management-configurable-rbac).
 
@@ -175,7 +177,7 @@ Invariants enforced by the platform:
 - A **mandatory comment** is required to reject; approval comments are optional.
 - Approved requests execute **exactly once**; rejected requests never execute.
 - There is no withdrawal or CANCELLED state. When a request executes, all other pending requests targeting the same entity are auto-rejected as *"superseded by executed request."*
-- For certificate issuance, `COMPLETED` is triggered when the OPERATOR_MAKER **downloads** the issued certificate; all other request types complete automatically on execution.
+- For certificate issuance, `COMPLETED` is triggered when the CA_OPERATOR_MAKER **downloads** the issued certificate; all other request types complete automatically on execution.
 - At least one active checker must exist for a request type to be actionable; the system warns before an action would remove the last checker.
 
 The 18 documented workflows (WF-001 … WF-018) live in [Docs/1-Requirements/Workflows/](Docs/1-Requirements/Workflows/).
@@ -223,7 +225,7 @@ Certificate-Authority/
 
 The [`mockups/`](mockups/) directory contains high-fidelity static HTML/CSS renderings of all 32 screens in the UI inventory, styled to the [brand guidelines](Docs/1-Requirements/branding.md). No build step or server is required — open the files directly in a browser.
 
-- **By persona** — open [`mockups/personas.html`](mockups/personas.html) for a role-correct view of each of the five roles, with the right navigation and action visibility.
+- **By persona** — open [`mockups/personas.html`](mockups/personas.html) for a role-correct view of each role, with the right navigation and action visibility.
 - **By feature** — open [`mockups/index.html`](mockups/index.html) for a gallery of every screen, grouped by feature area.
 
 Action-bearing screens include a **"View as" role switcher** that shows and hides controls per the BRD permission matrix. See [mockups/README.md](mockups/README.md) for details.

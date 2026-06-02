@@ -2,14 +2,14 @@
 
 ## Summary
 
-ADMIN_MAKER submits a request to revoke an Intermediate CA with a specified reason. ADMIN_CHECKER reviews and decides. **Revocation is permanent and irreversible.** On approval, the target Intermediate CA transitions to `REVOKED` and **all of its descendant Intermediate CAs cascade-revoke in the same atomic transaction**. Issued end-entity certificates under the chain remain as historical records. External revocation notification (CRL, OCSP) is out of scope for v1.0.
+CA_ADMIN_MAKER submits a request to revoke an Intermediate CA with a specified reason. CA_ADMIN_CHECKER reviews and decides. **Revocation is permanent and irreversible.** On approval, the target Intermediate CA transitions to `REVOKED` and **all of its descendant Intermediate CAs cascade-revoke in the same atomic transaction**. Issued end-entity certificates under the chain remain as historical records. External revocation notification (CRL, OCSP) is out of scope for v1.0.
 
 ## Actors
 
 | Role | Responsibility |
 |---|---|
-| ADMIN_MAKER | Submits the revocation request |
-| ADMIN_CHECKER | Reviews and decides |
+| CA_ADMIN_MAKER | Submits the revocation request |
+| CA_ADMIN_CHECKER | Reviews and decides |
 
 ## Preconditions
 
@@ -19,11 +19,11 @@ ADMIN_MAKER submits a request to revoke an Intermediate CA with a specified reas
 
 ```mermaid
 flowchart TD
-    A[ADMIN_MAKER opens Intermediate CA detail] --> B[Click Revoke]
+    A[CA_ADMIN_MAKER opens Intermediate CA detail] --> B[Click Revoke]
     B --> C[Select Revocation Reason]
     C --> D[Submit]
     D --> E[PENDING_APPROVAL]
-    E --> F[ADMIN_CHECKER review<br/>incl. cascade impact summary]
+    E --> F[CA_ADMIN_CHECKER review<br/>incl. cascade impact summary]
     F --> G{Decision}
     G -- Reject --> R[REJECTED] --> Z((End))
     G -- Approve --> H[APPROVED]
@@ -41,12 +41,12 @@ flowchart TD
 
 | # | Actor | Step | Validation |
 |---|---|---|---|
-| 1 | ADMIN_MAKER | Open Intermediate CA detail | Cannot revoke an already-`REVOKED` CA. |
-| 2 | ADMIN_MAKER | Click Revoke; review impact summary | UI shows: count of descendant Intermediate CAs that will cascade-revoke; count of `ACTIVE` certificates currently issued under the affected chain. |
-| 3 | ADMIN_MAKER | Select Revocation Reason | One of: KEY_COMPROMISE, CESSATION_OF_OPERATION, SUPERSEDED, OTHER. |
-| 4 | ADMIN_MAKER | Submit | Server re-validates status. |
-| 5 | ADMIN_CHECKER | Review | Snapshot + impact summary. |
-| 6 | ADMIN_CHECKER | Approve / Reject | Reject requires comment; self-approval blocked. |
+| 1 | CA_ADMIN_MAKER | Open Intermediate CA detail | Cannot revoke an already-`REVOKED` CA. |
+| 2 | CA_ADMIN_MAKER | Click Revoke; review impact summary | UI shows: count of descendant Intermediate CAs that will cascade-revoke; count of `ACTIVE` certificates currently issued under the affected chain. |
+| 3 | CA_ADMIN_MAKER | Select Revocation Reason | One of: KEY_COMPROMISE, CESSATION_OF_OPERATION, SUPERSEDED, OTHER. |
+| 4 | CA_ADMIN_MAKER | Submit | Server re-validates status. |
+| 5 | CA_ADMIN_CHECKER | Review | Snapshot + impact summary. |
+| 6 | CA_ADMIN_CHECKER | Approve / Reject | Reject requires comment; self-approval blocked. |
 | 7 | System | Execute in single DB transaction: <br/> 1) Mark target Intermediate CA `REVOKED`, `revocation_reason = <selected>`, `revocation_date = now()`. <br/> 2) Recursively walk descendants and mark each Intermediate CA `REVOKED` with reason `SUPERSEDED`, `revocation_date = now()`, `revoked_due_to_cascade_from = <target_intermediate_ca_id>`. <br/> 3) Commit. | Cascade is atomic. |
 | 8 | System | Emit per-CA audit records, supersede peer requests, notify maker, suppress further CA expiry warnings for the revoked CAs. |  |
 

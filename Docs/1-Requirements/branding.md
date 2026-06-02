@@ -523,7 +523,7 @@ All system-generated emails are **formal and institutional**. The system communi
 
 ---
 
-#### Certificate Expiry Warning (to OPERATOR_MAKER)
+#### Certificate Expiry Warning (to CA_OPERATOR_MAKER)
 
 > Dear [Full Name],
 >
@@ -546,7 +546,7 @@ All system-generated emails are **formal and institutional**. The system communi
 
 ---
 
-#### CA Expiry Warning (to ADMIN_MAKER)
+#### CA Expiry Warning (to CA_ADMIN_MAKER)
 
 > Dear [Full Name],
 >
@@ -568,7 +568,7 @@ All system-generated emails are **formal and institutional**. The system communi
 
 ---
 
-#### Account Locked (to Affected User and ADMIN_MAKER)
+#### Account Locked (to Affected User and SUPER_ADMIN_MAKER)
 
 > Dear [Full Name],
 >

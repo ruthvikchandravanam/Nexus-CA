@@ -2,14 +2,14 @@
 
 ## Summary
 
-ADMIN_MAKER submits a request to delete a role. Deletion is a **soft delete** — the role's `status` becomes `DELETED` and the record (with its permission history) is retained for audit; it is never physically purged. If the role has assigned users, the request must nominate a **reassignment target role** for those users. ADMIN_CHECKER reviews and decides. Subject to the minimum-viability safeguards. See [BRD — Role Management](../BRD.md#role-management-configurable-rbac).
+SUPER_ADMIN_MAKER submits a request to delete a role. Deletion is a **soft delete** — the role's `status` becomes `DELETED` and the record (with its permission history) is retained for audit; it is never physically purged. If the role has assigned users, the request must nominate a **reassignment target role** for those users. SUPER_ADMIN_CHECKER reviews and decides. Subject to the minimum-viability safeguards. See [BRD — Role Management](../BRD.md#role-management-configurable-rbac).
 
 ## Actors
 
 | Role | Responsibility |
 |---|---|
-| ADMIN_MAKER | Submits the deletion request |
-| ADMIN_CHECKER | Reviews and decides |
+| SUPER_ADMIN_MAKER | Submits the deletion request |
+| SUPER_ADMIN_CHECKER | Reviews and decides |
 
 ## Preconditions
 
@@ -21,7 +21,7 @@ ADMIN_MAKER submits a request to delete a role. Deletion is a **soft delete** �
 
 ```mermaid
 flowchart TD
-    A[ADMIN_MAKER opens role detail] --> B[Choose Delete]
+    A[SUPER_ADMIN_MAKER opens role detail] --> B[Choose Delete]
     B --> C{Role has assigned users?}
     C -- Yes --> D[Select reassignment target role]
     C -- No --> E
@@ -29,7 +29,7 @@ flowchart TD
     E -- No --> E1[Block with error] --> Z((End))
     E -- Yes --> F[Submit ROLE_DELETE]
     F --> G[PENDING_APPROVAL]
-    G --> H[ADMIN_CHECKER review]
+    G --> H[SUPER_ADMIN_CHECKER review]
     H --> I{Decision}
     I -- Reject --> R[REJECTED] --> Z
     I -- Approve --> J[APPROVED]
@@ -43,11 +43,11 @@ flowchart TD
 
 | # | Actor | Step | Validation |
 |---|---|---|---|
-| 1 | ADMIN_MAKER | Open role detail, choose Delete | Caller holds Role: Delete. |
-| 2 | ADMIN_MAKER | If users assigned, pick reassignment target | Target must be ACTIVE and ≠ the role being deleted. |
-| 3 | ADMIN_MAKER | Submit | Minimum-viability safeguards re-checked. Persists a `ROLE_DELETE` request. |
-| 4 | ADMIN_CHECKER | Review | Snapshot shows the role, its permissions, assigned-user count, and the reassignment target. |
-| 5 | ADMIN_CHECKER | Approve / Reject | Reject requires comment. |
+| 1 | SUPER_ADMIN_MAKER | Open role detail, choose Delete | Caller holds Role: Delete. |
+| 2 | SUPER_ADMIN_MAKER | If users assigned, pick reassignment target | Target must be ACTIVE and ≠ the role being deleted. |
+| 3 | SUPER_ADMIN_MAKER | Submit | Minimum-viability safeguards re-checked. Persists a `ROLE_DELETE` request. |
+| 4 | SUPER_ADMIN_CHECKER | Review | Snapshot shows the role, its permissions, assigned-user count, and the reassignment target. |
+| 5 | SUPER_ADMIN_CHECKER | Approve / Reject | Reject requires comment. |
 | 6 | System | Execute | Reassign holders to the target role, set `roles.status = DELETED`, increment `session_version` of every affected user. `EXECUTED → COMPLETED`. |
 
 ## Validation Rules

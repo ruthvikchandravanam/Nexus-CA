@@ -2,14 +2,14 @@
 
 ## Summary
 
-ADMIN_MAKER submits a request to change a role's **name** and/or **permission set**. ADMIN_CHECKER reviews the before/after permission diff and decides. On approval the role definition is updated. The **archetype is immutable** — changing Maker↔Checker↔Viewer would break segregation of duties, so a new role must be created instead (WF-016). Editing applies to both seeded and custom roles, subject to the minimum-viability safeguards. See [BRD — Role Management](../BRD.md#role-management-configurable-rbac).
+SUPER_ADMIN_MAKER submits a request to change a role's **name** and/or **permission set**. SUPER_ADMIN_CHECKER reviews the before/after permission diff and decides. On approval the role definition is updated. The **archetype is immutable** — changing Maker↔Checker↔Viewer would break segregation of duties, so a new role must be created instead (WF-016). Editing applies to both seeded and custom roles, subject to the minimum-viability safeguards. See [BRD — Role Management](../BRD.md#role-management-configurable-rbac).
 
 ## Actors
 
 | Role | Responsibility |
 |---|---|
-| ADMIN_MAKER | Submits the edit request |
-| ADMIN_CHECKER | Reviews and decides |
+| SUPER_ADMIN_MAKER | Submits the edit request |
+| SUPER_ADMIN_CHECKER | Reviews and decides |
 
 ## Preconditions
 
@@ -21,14 +21,14 @@ ADMIN_MAKER submits a request to change a role's **name** and/or **permission se
 
 ```mermaid
 flowchart TD
-    A[ADMIN_MAKER opens role detail] --> B[Edit name / toggle permissions]
+    A[SUPER_ADMIN_MAKER opens role detail] --> B[Edit name / toggle permissions]
     B --> C{Differs from current?}
     C -- No --> C1[Submit disabled] --> Z((End))
     C -- Yes --> D{Min-viability safeguards hold?}
     D -- No --> D1[Block with error] --> B
     D -- Yes --> E[Submit ROLE_EDIT]
     E --> F[PENDING_APPROVAL]
-    F --> G[ADMIN_CHECKER reviews permission diff]
+    F --> G[SUPER_ADMIN_CHECKER reviews permission diff]
     G --> H{Decision}
     H -- Reject --> R[REJECTED] --> Z
     H -- Approve --> I[APPROVED]
@@ -42,11 +42,11 @@ flowchart TD
 
 | # | Actor | Step | Validation |
 |---|---|---|---|
-| 1 | ADMIN_MAKER | Open role detail, choose Edit | Caller holds Role: Edit. Archetype shown read-only. |
-| 2 | ADMIN_MAKER | Change name and/or permissions | Same field rules as WF-016; archetype cannot change. |
-| 3 | ADMIN_MAKER | Submit | Must differ from current; minimum-viability safeguards re-checked. Persists a `ROLE_EDIT` request. |
-| 4 | ADMIN_CHECKER | Review | Before/after permission diff per [checker-review.md](../checker-review.md): added permissions (green), removed (red). |
-| 5 | ADMIN_CHECKER | Approve / Reject | Reject requires comment. |
+| 1 | SUPER_ADMIN_MAKER | Open role detail, choose Edit | Caller holds Role: Edit. Archetype shown read-only. |
+| 2 | SUPER_ADMIN_MAKER | Change name and/or permissions | Same field rules as WF-016; archetype cannot change. |
+| 3 | SUPER_ADMIN_MAKER | Submit | Must differ from current; minimum-viability safeguards re-checked. Persists a `ROLE_EDIT` request. |
+| 4 | SUPER_ADMIN_CHECKER | Review | Before/after permission diff per [checker-review.md](../checker-review.md): added permissions (green), removed (red). |
+| 5 | SUPER_ADMIN_CHECKER | Approve / Reject | Reject requires comment. |
 | 6 | System | Execute | Update `roles.name`, replace `role_permissions`; **increment `session_version` of every user holding the role** so their JWTs re-authorise under the new permissions. `EXECUTED → COMPLETED`. |
 
 ## Validation Rules

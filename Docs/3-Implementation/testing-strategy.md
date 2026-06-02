@@ -101,7 +101,7 @@ Additional cross-cutting E2E:
 | E2E-101 | Self-approval prohibited (maker attempts to approve own request, blocked) |
 | E2E-102 | Superseded request auto-rejected when peer executed |
 | E2E-103 | Disabled signing chain blocks issuance request execution |
-| E2E-104 | OTC failure threshold locks account, ADMIN_MAKER unlock works |
+| E2E-104 | OTC failure threshold locks account, SUPER_ADMIN_MAKER unlock works |
 | E2E-105 | JWT bumped on role change forces re-login |
 
 ### 3.6 Security tests

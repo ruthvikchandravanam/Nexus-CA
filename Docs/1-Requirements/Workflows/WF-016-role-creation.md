@@ -2,14 +2,14 @@
 
 ## Summary
 
-ADMIN_MAKER (any Maker-archetype role holding **Role: Create**) submits a request to create a new custom role: a name, an **archetype** (Maker / Checker / Viewer), and a set of (feature, operation) permissions chosen from the catalogue. ADMIN_CHECKER (a Checker-archetype role holding **Role: Approve**) reviews and decides. On approval the role becomes available for assignment to users (WF-007). See [BRD — Role Management](../BRD.md#role-management-configurable-rbac).
+SUPER_ADMIN_MAKER (any Maker-archetype role holding **Role: Create**) submits a request to create a new custom role: a name, an **archetype** (Maker / Checker / Viewer), and a set of (feature, operation) permissions chosen from the catalogue. SUPER_ADMIN_CHECKER (a Checker-archetype role holding **Role: Approve**) reviews and decides. On approval the role becomes available for assignment to users (WF-007). See [BRD — Role Management](../BRD.md#role-management-configurable-rbac).
 
 ## Actors
 
 | Role | Responsibility |
 |---|---|
-| ADMIN_MAKER | Submits the creation request |
-| ADMIN_CHECKER | Reviews and decides (approve / reject) |
+| SUPER_ADMIN_MAKER | Submits the creation request |
+| SUPER_ADMIN_CHECKER | Reviews and decides (approve / reject) |
 
 ## Preconditions
 
@@ -21,13 +21,13 @@ ADMIN_MAKER (any Maker-archetype role holding **Role: Create**) submits a reques
 
 ```mermaid
 flowchart TD
-    A[ADMIN_MAKER opens Create Role] --> B[Enter name + choose archetype]
+    A[SUPER_ADMIN_MAKER opens Create Role] --> B[Enter name + choose archetype]
     B --> C[Select permissions from catalogue<br/>scoped to archetype + feature]
     C --> D{Validation passes?}
     D -- No --> D1[Inline errors] --> C
     D -- Yes --> E[Submit]
     E --> F[Request PENDING_APPROVAL]
-    F --> G[ADMIN_CHECKER reviews permission set]
+    F --> G[SUPER_ADMIN_CHECKER reviews permission set]
     G --> H{Decision}
     H -- Reject + comment --> R[REJECTED] --> Z((End))
     H -- Approve --> I[APPROVED]
@@ -41,15 +41,15 @@ flowchart TD
 
 | # | Actor | Step | Validation |
 |---|---|---|---|
-| 1 | ADMIN_MAKER | Open *Create Role* | Role check: caller holds Role: Create. |
-| 2 | ADMIN_MAKER | Enter name; choose archetype | Name non-empty, ≤ 50 chars, unique among non-deleted roles; archetype ∈ {MAKER, CHECKER, VIEWER}. |
-| 3 | ADMIN_MAKER | Select permissions | Each (feature, operation) must be valid for the archetype and the feature. Edit/Delete allowed only for User, Role, System Configuration. Checker → only Approve/View; Viewer → only View. |
-| 4 | ADMIN_MAKER | Submit | Server re-validates all fields; persists a `ROLE_CREATE` request `PENDING_APPROVAL`. |
+| 1 | SUPER_ADMIN_MAKER | Open *Create Role* | Role check: caller holds Role: Create. |
+| 2 | SUPER_ADMIN_MAKER | Enter name; choose archetype | Name non-empty, ≤ 50 chars, unique among non-deleted roles; archetype ∈ {MAKER, CHECKER, VIEWER}. |
+| 3 | SUPER_ADMIN_MAKER | Select permissions | Each (feature, operation) must be valid for the archetype and the feature. Edit/Delete allowed only for User, Role, System Configuration. Checker → only Approve/View; Viewer → only View. |
+| 4 | SUPER_ADMIN_MAKER | Submit | Server re-validates all fields; persists a `ROLE_CREATE` request `PENDING_APPROVAL`. |
 | 5 | System | Notify checkers | Email per *Action Required* template. |
-| 6 | ADMIN_CHECKER | Open request | Self-approval blocked (maker = checker disables controls). |
-| 7 | ADMIN_CHECKER | Review permission set | Before pane empty (create); After pane shows the full permission grid. |
-| 8a | ADMIN_CHECKER | Approve | `PENDING_APPROVAL → APPROVED`; notify maker. |
-| 8b | ADMIN_CHECKER | Reject + mandatory comment | `PENDING_APPROVAL → REJECTED`; notify maker. Ends. |
+| 6 | SUPER_ADMIN_CHECKER | Open request | Self-approval blocked (maker = checker disables controls). |
+| 7 | SUPER_ADMIN_CHECKER | Review permission set | Before pane empty (create); After pane shows the full permission grid. |
+| 8a | SUPER_ADMIN_CHECKER | Approve | `PENDING_APPROVAL → APPROVED`; notify maker. |
+| 8b | SUPER_ADMIN_CHECKER | Reject + mandatory comment | `PENDING_APPROVAL → REJECTED`; notify maker. Ends. |
 | 9 | System | Execute | Insert `roles` row (`is_system = 0`, `status = ACTIVE`) and `role_permissions` rows. `EXECUTED → COMPLETED`. |
 
 ## Validation Rules (Field-Level)

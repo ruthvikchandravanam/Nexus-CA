@@ -125,10 +125,10 @@ After confirming the system is healthy:
 
 | # | Action |
 |---|---|
-| 1 | ADMIN_MAKER initiates WF-006 disable on the account (Sev2) |
+| 1 | SUPER_ADMIN_MAKER initiates WF-006 disable on the account (Sev2) |
 | 2 | Increment `session_version` is automatic on disable |
 | 3 | Review the user's recent audit trail to identify what they accessed or changed |
-| 4 | For ADMIN_* accounts: review any requests they approved while compromised; consider reversing (note: revoked CAs cannot be un-revoked, so cascading impact must be evaluated) |
+| 4 | For privileged accounts (SUPER_ADMIN_*, CA_ADMIN_*, CA_OPERATOR_*): review any requests they approved while compromised; consider reversing (note: revoked CAs cannot be un-revoked, so cascading impact must be evaluated) |
 | 5 | Issue a new account via WF-005 for the legitimate user; password reset via WF-014 |
 
 ### 5.6 SMTP outage

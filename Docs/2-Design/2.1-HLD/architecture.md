@@ -202,7 +202,7 @@ Each user record carries a `session_version` integer in the Business DB, increme
 
 ## Bootstrap
 
-A one-time `/setup` endpoint on the Business Logic API creates the initial ADMIN_MAKER and ADMIN_CHECKER users without maker-checker approval. It is permanently disabled after first use.
+A one-time `/setup` endpoint on the Business Logic API creates the initial SUPER_ADMIN_MAKER and SUPER_ADMIN_CHECKER users without maker-checker approval. It is permanently disabled after first use.
 
 ---
 

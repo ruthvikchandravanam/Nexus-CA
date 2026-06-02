@@ -34,7 +34,7 @@ Each arrow is a boundary across which authentication and validation apply. The m
 | T2 | Authenticated low-privilege user (e.g., AUDITOR) | Valid JWT |
 | T3 | Authenticated maker | Can submit requests |
 | T4 | Authenticated checker | Can approve/reject requests |
-| T5 | Malicious insider — ADMIN_MAKER or ADMIN_CHECKER | Single dual-control role |
+| T5 | Malicious insider — SUPER_ADMIN_MAKER or SUPER_ADMIN_CHECKER | Single dual-control role |
 | T6 | Malicious insider — DBA with Business DB access | Direct DB write |
 | T7 | Malicious insider — DBA with Crypto DB access | Direct DB write |
 | T8 | Compromised VLAN 3 host (e.g., BL container escape) | Outbound to Crypto API, BDB |
@@ -73,7 +73,7 @@ Each arrow is a boundary across which authentication and validation apply. The m
 | C14 | JWT signed with HS256 + `JWT_SECRET`; signature verified per request | T1, T2 | [crypto-design.md §5](../2.2-LLD/crypto-design.md#5-jwt-design) |
 | C15 | JWT carries `session_version`; mismatched session_version (e.g., role change, force logout) invalidates the JWT | T3, T4 | [architecture.md — Single Active Session](../2.1-HLD/architecture.md#single-active-session-enforcement) |
 | C16 | JWT does not carry permissions inline — role is in claim and authorisation is re-checked server-side per request | T2 | Same |
-| C17 | Emails sent only by the BL via SMTP relay with STARTTLS; recipient address is read from `users.email` set by ADMIN_MAKER (cannot be self-changed to bypass) | T5 | BRD Self-Profile Update (email IS editable; mitigated by C13 audit) |
+| C17 | Emails sent only by the BL via SMTP relay with STARTTLS; recipient address is read from `users.email` set by SUPER_ADMIN_MAKER (cannot be self-changed to bypass) | T5 | BRD Self-Profile Update (email IS editable; mitigated by C13 audit) |
 | C18 | TLS on SMTP relay; corporate relay is the only outbound destination from VLAN 3 (single fixed IP) | T1 | [architecture.md — VLANs](../2.1-HLD/architecture.md#vlans) |
 | C19 | Secrets stored in OpenBao with audit; KEK never persisted to disk on CA host; injected at container start | T6, T9 (partial) | [tools.md — Secret Management](../../3-Implementation/tools.md#secret-management) |
 | C20 | Two-person physical procedure for KEK rotation and bootstrap | T9 (residual) | [bootstrap-procedure.md](../../3-Implementation/bootstrap-procedure.md), [key-rotation-procedure.md](../../3-Implementation/key-rotation-procedure.md) |
@@ -114,11 +114,11 @@ Attacker gains code execution inside a Business Logic API container.
 
 Detection: anomalous certificate issuance volume (observability — see [observability-runbook.md](../../3-Implementation/observability-runbook.md)). Incident response: rotate `CRYPTO_API_KEY`, `JWT_SECRET`, audit issued certificates for the compromise window.
 
-### Scenario 3 — Malicious ADMIN_CHECKER (T5)
+### Scenario 3 — Malicious SUPER_ADMIN_CHECKER (T5)
 
-Attacker is an authenticated ADMIN_CHECKER colluding with no one.
+Attacker is an authenticated SUPER_ADMIN_CHECKER colluding with no one.
 
-- They can approve any administrative request *submitted by an ADMIN_MAKER*. They cannot submit and approve their own (C11).
+- They can approve any administrative request *submitted by an SUPER_ADMIN_MAKER*. They cannot submit and approve their own (C11).
 - A solo malicious checker can therefore approve, but cannot originate, a malicious change. The malicious maker would have to exist separately.
 - Detection: every approval is audited with the checker's identity and comment (C13).
 
@@ -126,7 +126,7 @@ This is exactly the design intent of the maker-checker control.
 
 ### Scenario 5 — Privilege escalation via a custom role (T3, T5)
 
-A malicious ADMIN_MAKER tries to grant themselves (or an accomplice) excessive authority by crafting a custom role, or to lock administration out by deleting/editing roles.
+A malicious SUPER_ADMIN_MAKER tries to grant themselves (or an accomplice) excessive authority by crafting a custom role, or to lock administration out by deleting/editing roles.
 
 - They cannot grant any permission outside the fixed **catalogue** — there is no "all permissions" or arbitrary-capability option (C23).
 - The role create/edit/delete is itself **maker-checker**: a separate checker must approve, and they see the full before/after permission diff (C22). A solo maker cannot enact a privileged role.
@@ -142,7 +142,7 @@ Net effect: introducing configurable roles does not weaken dual control — ever
 Attacker tries password lists against the public LB.
 
 - Nginx limits to 5 req/min/IP on `/auth/login` and `/auth/mfa` (C10).
-- After 3 MFA failures the user account locks (configurable). Account locked email is sent to the user and ADMIN_MAKER (visibility).
+- After 3 MFA failures the user account locks (configurable). Account locked email is sent to the user and SUPER_ADMIN_MAKER (visibility).
 - An attacker would need to find a valid username AND get the right password AND get past MFA before lockout. Realistically infeasible.
 
 ---

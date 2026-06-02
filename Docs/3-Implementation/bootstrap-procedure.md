@@ -1,6 +1,6 @@
 # Bootstrap Procedure
 
-The one-time procedure that creates the initial ADMIN_MAKER and ADMIN_CHECKER accounts on a fresh deployment. After successful completion, the `/setup` endpoint is permanently disabled.
+The one-time procedure that creates the initial SUPER_ADMIN_MAKER and SUPER_ADMIN_CHECKER accounts on a fresh deployment. After successful completion, the `/setup` endpoint is permanently disabled.
 
 This is the highest-trust operational action in the platform: the operator running it has implicit superuser authority (no maker-checker yet exists). Two-person physical presence is required.
 
@@ -10,8 +10,8 @@ This is the highest-trust operational action in the platform: the operator runni
 
 | Role | Identity | Responsibility |
 |---|---|---|
-| Bootstrap Operator A | Person who will own the first ADMIN_MAKER account | Logs in to the deployment host, runs the bootstrap command |
-| Bootstrap Operator B | Person who will own the first ADMIN_CHECKER account | Physically present, witnesses operator A, verifies the `/setup` lock-out at the end |
+| Bootstrap Operator A | Person who will own the first SUPER_ADMIN_MAKER account | Logs in to the deployment host, runs the bootstrap command |
+| Bootstrap Operator B | Person who will own the first SUPER_ADMIN_CHECKER account | Physically present, witnesses operator A, verifies the `/setup` lock-out at the end |
 | Platform Owner | Named individual responsible for Nexus CA | Approves the bootstrap window in writing |
 
 Operators A and B must be different individuals. Neither operator may be a third party (vendor, contractor) without written authorization from the Platform Owner.

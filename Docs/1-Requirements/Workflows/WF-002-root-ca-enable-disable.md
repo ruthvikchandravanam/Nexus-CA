@@ -2,30 +2,30 @@
 
 ## Summary
 
-ADMIN_MAKER submits a request to flip a Root CA's status between `ACTIVE` and `DISABLED`. ADMIN_CHECKER reviews and approves or rejects. Disabling a Root CA does not affect already-issued certificates but blocks new issuance requests that would chain to it. Revoked CAs cannot be enabled — this workflow does not apply to `REVOKED` CAs.
+CA_ADMIN_MAKER submits a request to flip a Root CA's status between `ACTIVE` and `DISABLED`. CA_ADMIN_CHECKER reviews and approves or rejects. Disabling a Root CA does not affect already-issued certificates but blocks new issuance requests that would chain to it. Revoked CAs cannot be enabled — this workflow does not apply to `REVOKED` CAs.
 
 ## Actors
 
 | Role | Responsibility |
 |---|---|
-| ADMIN_MAKER | Submits the enable / disable request |
-| ADMIN_CHECKER | Reviews and decides |
+| CA_ADMIN_MAKER | Submits the enable / disable request |
+| CA_ADMIN_CHECKER | Reviews and decides |
 
 ## Preconditions
 
 - Target Root CA exists and is in status `ACTIVE` or `DISABLED` (not `REVOKED`).
-- At least one ACTIVE ADMIN_CHECKER different from the maker exists.
+- At least one ACTIVE CA_ADMIN_CHECKER different from the maker exists.
 
 ## Diagram
 
 ```mermaid
 flowchart TD
-    A[ADMIN_MAKER selects Root CA] --> B{Status is ACTIVE<br/>or DISABLED?}
+    A[CA_ADMIN_MAKER selects Root CA] --> B{Status is ACTIVE<br/>or DISABLED?}
     B -- No (REVOKED) --> B1[Action not offered] --> Z((End))
     B -- Yes --> C[Choose target status:<br/>ACTIVE or DISABLED]
     C --> D[Submit request]
     D --> E[PENDING_APPROVAL]
-    E --> F[ADMIN_CHECKER review]
+    E --> F[CA_ADMIN_CHECKER review]
     F --> G{Decision}
     G -- Reject --> R[REJECTED] --> Z
     G -- Approve --> H[APPROVED]
@@ -40,11 +40,11 @@ flowchart TD
 
 | # | Actor | Step | Validation |
 |---|---|---|---|
-| 1 | ADMIN_MAKER | Open Root CA detail page | Role check. |
-| 2 | ADMIN_MAKER | Click *Enable* or *Disable* | Only the action consistent with the current status is offered. Both actions are hidden if status is `REVOKED`. |
-| 3 | ADMIN_MAKER | Submit | Server re-validates: target status is the opposite of current status. Creates Request row, status `PENDING_APPROVAL`. |
-| 4 | ADMIN_CHECKER | Open and review | Before snapshot shows current Root CA fields including status; After snapshot shows the same with status flipped. |
-| 5 | ADMIN_CHECKER | Approve / Reject | Reject requires comment. Self-approval blocked. |
+| 1 | CA_ADMIN_MAKER | Open Root CA detail page | Role check. |
+| 2 | CA_ADMIN_MAKER | Click *Enable* or *Disable* | Only the action consistent with the current status is offered. Both actions are hidden if status is `REVOKED`. |
+| 3 | CA_ADMIN_MAKER | Submit | Server re-validates: target status is the opposite of current status. Creates Request row, status `PENDING_APPROVAL`. |
+| 4 | CA_ADMIN_CHECKER | Open and review | Before snapshot shows current Root CA fields including status; After snapshot shows the same with status flipped. |
+| 5 | CA_ADMIN_CHECKER | Approve / Reject | Reject requires comment. Self-approval blocked. |
 | 6 | System | Execute: update Root CA `status` and `status_changed_at` columns | Atomic in Business DB. |
 | 7 | System | Supersede peer requests | Any other `PENDING_APPROVAL` request targeting this Root CA is auto-rejected with reason *superseded by executed request*. |
 | 8 | System | Notify maker; transition to `COMPLETED` |  |

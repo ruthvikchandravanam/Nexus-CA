@@ -2,14 +2,14 @@
 
 ## Summary
 
-ADMIN_MAKER submits a request to change one or more System Configuration parameters. ADMIN_CHECKER reviews and decides. Changes take effect on execution. All parameter changes are captured in the audit log. Configuration is read at runtime by the Business Logic API on each scheduled task tick and on each request that consults a parameter — no service restart is required.
+SUPER_ADMIN_MAKER submits a request to change one or more System Configuration parameters. SUPER_ADMIN_CHECKER reviews and decides. Changes take effect on execution. All parameter changes are captured in the audit log. Configuration is read at runtime by the Business Logic API on each scheduled task tick and on each request that consults a parameter — no service restart is required.
 
 ## Actors
 
 | Role | Responsibility |
 |---|---|
-| ADMIN_MAKER | Submits the change request |
-| ADMIN_CHECKER | Reviews and decides |
+| SUPER_ADMIN_MAKER | Submits the change request |
+| SUPER_ADMIN_CHECKER | Reviews and decides |
 
 ## Preconditions
 
@@ -20,12 +20,12 @@ ADMIN_MAKER submits a request to change one or more System Configuration paramet
 
 ```mermaid
 flowchart TD
-    A[ADMIN_MAKER opens Configuration page] --> B[Edit one or more parameters]
+    A[SUPER_ADMIN_MAKER opens Configuration page] --> B[Edit one or more parameters]
     B --> C{Field validation passes for all changed params?}
     C -- No --> C1[Inline errors] --> B
     C -- Yes --> D[Submit change request]
     D --> E[PENDING_APPROVAL]
-    E --> F[ADMIN_CHECKER review — full diff per parameter]
+    E --> F[SUPER_ADMIN_CHECKER review — full diff per parameter]
     F --> G{Decision}
     G -- Reject --> R[REJECTED] --> Z((End))
     G -- Approve --> H[APPROVED]
@@ -40,11 +40,11 @@ flowchart TD
 
 | # | Actor | Step | Validation |
 |---|---|---|---|
-| 1 | ADMIN_MAKER | Open *System Configuration* | Role check. Page shows all parameters in [BRD — System Configuration](../BRD.md#system-configuration). |
-| 2 | ADMIN_MAKER | Edit one or more parameters | Per-parameter validation as below. |
-| 3 | ADMIN_MAKER | Submit | Server re-validates all changed values. Creates Request `PENDING_APPROVAL`. The request payload is a JSON map of `{parameter_name → new_value}` for changed parameters only. |
-| 4 | ADMIN_CHECKER | Review | Diff renders one row per changed parameter (Before/After). |
-| 5 | ADMIN_CHECKER | Approve / Reject | Reject requires comment. Self-approval blocked. |
+| 1 | SUPER_ADMIN_MAKER | Open *System Configuration* | Role check. Page shows all parameters in [BRD — System Configuration](../BRD.md#system-configuration). |
+| 2 | SUPER_ADMIN_MAKER | Edit one or more parameters | Per-parameter validation as below. |
+| 3 | SUPER_ADMIN_MAKER | Submit | Server re-validates all changed values. Creates Request `PENDING_APPROVAL`. The request payload is a JSON map of `{parameter_name → new_value}` for changed parameters only. |
+| 4 | SUPER_ADMIN_CHECKER | Review | Diff renders one row per changed parameter (Before/After). |
+| 5 | SUPER_ADMIN_CHECKER | Approve / Reject | Reject requires comment. Self-approval blocked. |
 | 6 | System | Execute | Single DB transaction: update each `system_configuration` row's `value` column; emit one audit field-level row per changed parameter. |
 | 7 | System | Notify maker; transition `COMPLETED` |  |
 
@@ -56,7 +56,8 @@ flowchart TD
 | MFA One-Time Code Validity (minutes) | int | 1..60 | 400 `VAL-0050` |
 | Temporary Password Validity (hours) | int | 1..168 | 400 `VAL-0050` |
 | Password Expiry (days) | int | 1..365 | 400 `VAL-0050` |
-| Password Minimum Length | int | 8..64 | 400 `VAL-0050` |
+| Password Policy Regex | string | Non-empty; compiles as a valid regular expression; minimum acceptable length implied by the pattern ≤ 72 | 400 `VAL-0050` |
+| Password History Depth | int | 1..24 | 400 `VAL-0050` |
 | Session Timeout (minutes) | int | 5..480 | 400 `VAL-0050` |
 | Allowed Key Algorithms | set | non-empty subset of {RSA, EC} | 400 `VAL-0051` |
 | Minimum RSA Key Size (bits) | int | ∈ {2048, 3072, 4096} | 400 `VAL-0052` |
