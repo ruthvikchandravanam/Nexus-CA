@@ -7,10 +7,10 @@
 | Project Name | Nexus CA — Internal Certificate Authority Platform |
 | Project ID | CA-PLATFORM-V1 |
 | Version | 1.0 |
-| Author | Platform Engineering |
+| Author | RuthvikChandra Vanam |
 | Date | 2026-06-02 |
-| Status | Approved — Baseline Scope Locked (amended to add configurable Role Management / RBAC engine; see [§9.6 Role Management & RBAC](#96-role-management--configurable-rbac)) |
-| Stakeholders | Business Owner, Product Owner, Technology Lead, Security, Operations, QA |
+| Status | Approved — Baseline Scope Locked |
+| Stakeholders | Business Owner, Product Owner, Technology Lead, Security, Operations, and QA subagents |
 
 ---
 
@@ -22,9 +22,9 @@ Develop an internal Certificate Authority platform ("Nexus CA") for:
 
 - Root CA management
 - Intermediate CA management
-- User and role management
 - Certificate issuance
 - CA certificate revocation (Root CA and Intermediate CA only)
+- User and role management
 - Audit trail management
 
 ### Business Problem
@@ -125,12 +125,12 @@ The organisation needs to issue and manage internal X.509 certificates (client, 
 
 | Role | Name | Responsibility |
 |--------|--------|---------------|
-| Business Owner | | Owns business outcomes and funding; approves scope |
-| Product Owner | | Prioritises requirements; accepts delivery |
-| Technology Lead | | Owns architecture and technical delivery |
-| Security | | Owns threat model, cryptographic and access controls |
-| Operations | | Owns bootstrap, deployment, backup/restore, incident response |
-| QA Lead | | Owns SIT/UAT/regression and acceptance verification |
+| Business Owner | Business Owner subagent | Owns business outcomes and funding; approves scope |
+| Product Owner | Product Owner subagent | Prioritises requirements; accepts delivery |
+| Technology Lead | Technology Lead subagent | Owns architecture and technical delivery |
+| Security | Security subagent | Owns threat model, cryptographic and access controls |
+| Operations | Operations subagent | Owns bootstrap, deployment, backup/restore, incident response |
+| QA | QA subagent | Owns SIT/UAT/regression and acceptance verification |
 
 ---
 
@@ -245,17 +245,17 @@ These seven are the **seeded roles** shipped with the platform. The CA_ADMIN, CA
 | **Root CA** | Create Request | ✗ | ✗ | ✓ | ✗ | ✗ | ✗ | ✗ |
 | | Enable / Disable Request | ✗ | ✗ | ✓ | ✗ | ✗ | ✗ | ✗ |
 | | Revoke Request | ✗ | ✗ | ✓ | ✗ | ✗ | ✗ | ✗ |
-| | View | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
-| | Download Public Certificate | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| | View | ✗ | ✗ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| | Download Public Certificate | ✗ | ✗ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | | Approve / Reject | ✗ | ✗ | ✗ | ✓ | ✗ | ✗ | ✗ |
 | **Intermediate CA** | Create Request | ✗ | ✗ | ✓ | ✗ | ✗ | ✗ | ✗ |
 | | Enable / Disable Request | ✗ | ✗ | ✓ | ✗ | ✗ | ✗ | ✗ |
 | | Revoke Request | ✗ | ✗ | ✓ | ✗ | ✗ | ✗ | ✗ |
-| | View | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
-| | Download Public Certificate | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| | View | ✗ | ✗ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| | Download Public Certificate | ✗ | ✗ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | | Approve / Reject | ✗ | ✗ | ✗ | ✓ | ✗ | ✗ | ✗ |
 | **Certificate** | Submit CSR (Create) | ✗ | ✗ | ✗ | ✗ | ✓ | ✗ | ✗ |
-| | View | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| | View | ✗ | ✗ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | | Download Issued Certificate | ✗ | ✗ | ✗ | ✗ | ✓ | ✓ | ✗ |
 | | Approve / Reject Issuance | ✗ | ✗ | ✗ | ✗ | ✗ | ✓ | ✗ |
 | **User** | Create Request | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ |
@@ -271,11 +271,11 @@ These seven are the **seeded roles** shipped with the platform. The CA_ADMIN, CA
 | | Delete Request | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ |
 | | View | ✓ | ✓ | ✗ | ✗ | ✗ | ✗ | ✓ |
 | | Approve / Reject | ✗ | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ |
-| **Own Profile** | View | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
-| | Edit (excl. User ID) | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
-| **Requests** | View | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
-| **Audit Logs** | View | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
-| **Reports** | View | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| **Own Profile** | View | ✗ | ✗ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| | Edit (excl. User ID) | ✗ | ✗ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| **Requests** | View | ✗ | ✗ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| **Audit Logs** | View | ✗ | ✗ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| **Reports** | View | ✗ | ✗ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | **System Configuration** | View | ✓ | ✓ | ✗ | ✗ | ✗ | ✗ | ✓ |
 | | Edit Request | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ |
 | | Approve / Reject | ✗ | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ |
@@ -316,9 +316,11 @@ All access is authenticated, with mandatory email-based MFA and policy-driven cr
 - All users must authenticate with username and password.
 - Multi-Factor Authentication (MFA) is mandatory for all users.
 - The MFA second factor is a One-Time Code (OTC) delivered to the user's registered email address.
+- The OTC is a numeric code whose length is configurable via the **MFA OTC Length (digits)** parameter (default: 6 digits).
 - The OTC is valid for a configurable validity window (default: 10 minutes) from the time of issuance. Expired OTCs are rejected; the user must request a new login attempt.
 - Only the most recent OTC issued to a user is valid. Any prior OTC is invalidated as soon as a new one is generated.
 - An OTC is single-use. A successful verification invalidates the OTC immediately.
+- A user may request a new OTC (resend) up to a configurable **MFA OTC Resend Limit** (default: 3) per login/verification session, with a configurable **MFA OTC Resend Cooldown (seconds)** (default: 30) enforced between consecutive resend requests. Exceeding the resend limit ends the current verification session and requires the user to restart the login attempt.
 - Login is denied if MFA is not completed.
 - After a configurable number of consecutive failed MFA attempts (default: 3), the account is locked.
 - A locked account can be unlocked by:
@@ -358,7 +360,7 @@ All access is authenticated, with mandatory email-based MFA and policy-driven cr
 - When a Root CA is revoked, all of its Intermediate CAs are automatically REVOKED.
 - Certificates signed by a revoked CA remain as historical records in the system. External revocation notification (CRL, OCSP) is out of scope for v1.0.
 - The system generates the CA keypair on approval execution. User-provided keys are not accepted.
-- The public certificate of a Root CA is available for download by all authenticated users.
+- The public certificate of a Root CA is available for download by any user whose role holds the **Download Public Certificate** permission on Root CA (per the [Permissions](#permissions) matrix) — i.e., the CA_ADMIN, CA_OPERATOR, and AUDITOR roles by default.
 
 #### Allowed status transitions
 
@@ -400,7 +402,7 @@ All access is authenticated, with mandatory email-based MFA and policy-driven cr
 - When an Intermediate CA is revoked, all of its child Intermediate CAs are automatically REVOKED.
 - Certificates signed by a revoked Intermediate CA remain as historical records in the system. External revocation notification (CRL, OCSP) is out of scope for v1.0.
 - The system generates the CA keypair on approval execution. User-provided keys are not accepted.
-- The public certificate of an Intermediate CA is available for download by all authenticated users.
+- The public certificate of an Intermediate CA is available for download by any user whose role holds the **Download Public Certificate** permission on Intermediate CA (per the [Permissions](#permissions) matrix) — i.e., the CA_ADMIN, CA_OPERATOR, and AUDITOR roles by default.
 
 #### Allowed status transitions
 
@@ -864,6 +866,9 @@ System parameters are managed exclusively by SUPER_ADMIN_MAKER from a dedicated 
 |---|---|---|
 | MFA Attempt Limit | 3 | Maximum consecutive failed MFA attempts before account lockout |
 | MFA One-Time Code Validity (minutes) | 10 | Validity window of an emailed OTC after issuance |
+| MFA OTC Length (digits) | 6 | Number of digits in the emailed One-Time Code |
+| MFA OTC Resend Limit | 3 | Maximum number of OTC resends a user may request within a single login/verification session |
+| MFA OTC Resend Cooldown (seconds) | 30 | Minimum interval between consecutive OTC resend requests |
 | Temporary Password Validity (hours) | 24 | Validity window of a temporary password issued on user creation or admin-initiated reset |
 | Password Expiry (days) | 30 | Number of days before a user password must be changed |
 | Password Policy Regex | `^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^A-Za-z0-9]).{12,}$` | Regular expression a password must fully match. Authoritative for length and complexity. Must be a valid (compilable) pattern; effective length must stay within the 72-byte bcrypt limit |

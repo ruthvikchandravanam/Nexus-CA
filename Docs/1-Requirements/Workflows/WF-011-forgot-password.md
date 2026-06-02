@@ -45,7 +45,7 @@ flowchart TD
 | 1 | User | Click *Forgot Password* on login | Rate limited per Nginx config. |
 | 2 | User | Enter Username or Email | Field accepts either; server tries username first then email. |
 | 3 | Server | Lookup; if no match or user is `REVOKED`/non-existent → return generic 200 *If an account matches, you will receive an email*; do not send email. | No user enumeration. |
-| 4 | Server | If match → generate 6-digit numeric OTC; store SHA-256(OTC) + expires_at = now + OTC validity; invalidate any prior unused OTC for the user; email the OTC. |  |
+| 4 | Server | If match → generate a numeric OTC of the configured length (`MFA OTC Length (digits)`, default 6); store SHA-256(OTC) + expires_at = now + OTC validity; invalidate any prior unused OTC for the user; email the OTC. Resends are capped by `MFA OTC Resend Limit` with `MFA OTC Resend Cooldown (seconds)` enforced between requests. |  |
 | 5 | User | Submit OTC + new password + confirm password |  |
 | 6 | Server | Verify OTC matches the current hash AND not expired AND not already consumed | Failure increments `users.mfa_failure_count`; on threshold the account is locked (status remains `ACTIVE` but `locked_at` set; login is blocked until unlocked). |
 | 7 | Server | Validate new password against the policy regex and against the last *N* passwords in `password_history` (N = Password History Depth), per [BRD — Authentication Requirements](../BRD.md#authentication-requirements) | Reject `BUS-0070` if it bcrypt-matches any retained history entry. |

@@ -54,6 +54,9 @@ flowchart TD
 |---|---|---|---|
 | MFA Attempt Limit | int | 1..10 | 400 `VAL-0050` |
 | MFA One-Time Code Validity (minutes) | int | 1..60 | 400 `VAL-0050` |
+| MFA OTC Length (digits) | int | 4..10 | 400 `VAL-0050` |
+| MFA OTC Resend Limit | int | 1..10 | 400 `VAL-0050` |
+| MFA OTC Resend Cooldown (seconds) | int | 0..600 | 400 `VAL-0050` |
 | Temporary Password Validity (hours) | int | 1..168 | 400 `VAL-0050` |
 | Password Expiry (days) | int | 1..365 | 400 `VAL-0050` |
 | Password Policy Regex | string | Non-empty; compiles as a valid regular expression; minimum acceptable length implied by the pattern ≤ 72 | 400 `VAL-0050` |
